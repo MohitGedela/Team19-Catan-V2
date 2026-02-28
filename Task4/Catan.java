@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.io.File;
 
 // Starts the game: makes the board, players, then runs rounds until someone hits 10 VP or we hit max rounds.
 class Catan {
@@ -32,13 +31,15 @@ class Catan {
         int maxRounds = Integer.parseInt(line.split(":")[1].trim());
         scanner.close();
 
-        // Make 4 players with no stuff yet.
+        Turn turn = new Turn(dice, production, board);
+
+        // Make 4 players: 3 computer, 1 human (player 4). Human needs Turn to execute Roll.
         List<Player> players = new ArrayList<Player>();
 
-        Player p1 = new Player(1, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
-        Player p2 = new Player(2, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
-        Player p3 = new Player(3, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
-        Player p4 = new Player(4, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        Player p1 = new ComputerPlayer(1, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        Player p2 = new ComputerPlayer(2, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        Player p3 = new ComputerPlayer(3, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>(), turn);
 
         players.add(p1);
         players.add(p2);
@@ -68,7 +69,6 @@ class Catan {
 
         // One turn = roll dice, give out resources, player does one build. Simulator
         // runs round by round.
-        Turn turn = new Turn(dice, production, board);
         Simulator simulator = new Simulator(players, turn, maxRounds);
 
         simulator.runGame();

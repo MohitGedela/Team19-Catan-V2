@@ -12,9 +12,20 @@ class Turn {
     }
 
     public String execute(Player player, int roundNumber) {
+        if (player instanceof HumanPlayer) {
+            // Human rolls when they type "Roll"; no initial roll here.
+            String actionResult = player.takeAction(board);
+            return "[" + roundNumber + "] / [" + player.getPlayerID() + "]: " + actionResult;
+        }
         int roll = dice.roll();
-        production.generateResources(roll); // Give out resources to all players on hexes that match the roll.
+        production.generateResources(roll);
         String actionResult = player.takeAction(board);
         return "[" + roundNumber + "] / [" + player.getPlayerID() + "]: Rolled " + roll + ", " + actionResult;
+    }
+
+    public int doRoll(Player player) {
+        int roll = dice.roll();
+        production.generateResources(roll);
+        return roll;
     }
 }

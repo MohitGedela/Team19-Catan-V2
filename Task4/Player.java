@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 // One player: their cards (resources), buildings (settlements/cities/roads), and VP. Can build if they have the right cards.
 abstract class Player {
@@ -121,5 +122,10 @@ abstract class Player {
 
     public int getPlayerID() {
         return playerID;
+    }
+
+    /** Returns a copy of the player's resource counts (for display, e.g. List command). */
+    public Map<ResourceType, Integer> getResourceMap() {
+        return new HashMap<>(playerResources);
     }
 }
