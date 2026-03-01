@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 // One player: their cards (resources), buildings (settlements/cities/roads), and VP. Can build if they have the right cards.
 abstract class Player {
@@ -124,8 +126,44 @@ abstract class Player {
         return playerID;
     }
 
-    /** Returns a copy of the player's resource counts (for display, e.g. List command). */
+    /**
+     * Returns a copy of the player's resource counts (for display, e.g. List
+     * command).
+     */
     public Map<ResourceType, Integer> getResourceMap() {
         return new HashMap<>(playerResources);
+    }
+
+    private ResourceType getRandomResource(Random random) {
+        Map<ResourceType, Integer> resourceMap = getResourceMap();
+        List<ResourceType> resources = new ArrayList<>();
+        for (ResourceType resource : resourceMap.keySet()) {
+            int count = resourceMap.get(resource);
+            for (int i = 0; i < count; i++) {
+                resources.add(resource);
+            }
+        }
+        return resources.get(random.nextInt(resources.size()));
+    }
+
+    public void discardCards(Random random) {
+        int cardsNum = getTotalResources();
+        if (cardsNum > 7) {
+            int discardCount = cardsNum / 2;
+            for (int i = 0; i < discardCount; i++) {
+                ResourceType card = getRandomResource(null);
+                removeResource(card, 1);
+            }
+            System.out.println("Player " + playerID + " discarded" + discardCount + " cards.");
+        }
+    }
+
+    public void giveRandomResource(Player newPlayer, Random random) {
+        if (getTotalResources() != 0) {
+            ResourceType card = getRandomResource(random);
+            removeResource(card, 1);
+            newPlayer.addResource(card, 1);
+            System.out.println("Player " + newPlayer.getPlayerID() + " stole " + card + " to Player " + playerID);
+        }
     }
 }
