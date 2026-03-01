@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.List;
 
 // The map: 54 corners (intersections), 19 hexes with resources and numbers. Tracks where buildings and roads are.
@@ -19,9 +20,11 @@ class Board {
     private Map<Integer, HexTerrain> tiles;
     private List<int[]> builtEdges = new ArrayList<>();
     private GameRules rules = new GameRules();
+    private int robberHexID;
 
     public Board() {
         intersections = new HashMap<>();
+        robberHexID = 9;
         for (int i = 0; i <= 53; i++) {
             intersections.put(i, new Intersection(i));
         }
@@ -161,5 +164,34 @@ class Board {
         }
 
         return hexes;
+    }
+
+    public int getRobberHexID() {
+        return robberHexID;
+    }
+
+    public void moveRobber(Random random) {
+        int moveTile = 0;
+        while (moveTile == robberHexID) {
+            moveTile = random.nextInt(19);
+        }
+        robberHexID = moveTile;
+    }
+
+    public List<Player> getNearPlayers(List<Player> players) {
+        List<Integer> nearbyIntersections = getHexIntersections(robberHexID);
+        List<Player> playersList = new ArrayList<>();
+
+        for (Player player: players) {
+            for (int intersectionID: nearbyIntersections) {
+                Intersection intersection = getIntersection(intersectionID);
+                if (intersection != null && intersection.getPlayer() == player) {
+                    if (!playersList.contains(player)) {
+                        playersList.add(player);
+                    }
+                }
+            }
+        }
+        return playersList;
     }
 }
