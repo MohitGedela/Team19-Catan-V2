@@ -31,19 +31,19 @@ class Catan {
         int maxRounds = Integer.parseInt(line.split(":")[1].trim());
         scanner.close();
 
-        Turn turn = new Turn(dice, production, board);
-
         // Make 4 players: 3 computer, 1 human (player 4). Human needs Turn to execute Roll.
         List<Player> players = new ArrayList<Player>();
 
         Player p1 = new ComputerPlayer(1, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
         Player p2 = new ComputerPlayer(2, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
         Player p3 = new ComputerPlayer(3, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
-        Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>(), turn);
 
         players.add(p1);
         players.add(p2);
         players.add(p3);
+
+        Turn turn = new Turn(dice, production, board, players);
+        Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>(), turn);
         players.add(p4);
 
         // Put 2 settlements per player on the board (each gives 1 VP). First one each.
