@@ -10,11 +10,8 @@ class Dice {
     }
 
     public int roll() {
-        do {
-            dice1 = random.nextInt(6) + 1;
-            dice2 = random.nextInt(6) + 1;
-        } while (dice1 + dice2 == 7); 
-
+        dice1 = random.nextInt(6) + 1;
+        dice2 = random.nextInt(6) + 1;
         return dice1 + dice2;
     }
 }
