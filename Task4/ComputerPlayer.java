@@ -16,8 +16,9 @@ class ComputerPlayer extends Player {
     // If over 7 cards we must try to spend (settlement then city then road). Else
     // pick one build at random and try it.
     @Override
-    public String takeAction(Board board) {
+    public String takeAction(Board board, Turn turn) {
         Random random = new Random();
+        int roll = turn.doRoll(this);
 
         if (getTotalResources() > 7) {
             for (int i = 0; i <= 53; i++) {
@@ -26,7 +27,7 @@ class ComputerPlayer extends Player {
                     int vpBefore = victoryPoints;
                     buildSettlement(board, spot);
                     if (victoryPoints > vpBefore) {
-                        return "forced spend: built settlement at " + i;
+                        return "Rolled " + roll + ", forced spend: built settlement at " + i;
                     }
                 }
             }
@@ -35,7 +36,7 @@ class ComputerPlayer extends Player {
                 int vpBefore = victoryPoints;
                 buildCity(board, spot);
                 if (victoryPoints > vpBefore) {
-                    return "forced spend: upgraded to city at " + spot.getIntersectionLocation();
+                    return "Rolled " + roll + ", forced spend: upgraded to city at " + spot.getIntersectionLocation();
                 }
             }
             for (int i = 0; i <= 53; i++) {
@@ -45,12 +46,12 @@ class ComputerPlayer extends Player {
                         Edge edge = new Edge(i, j);
                         buildRoad(board, edge);
                         if (playerRoads.size() > roadsBefore) {
-                            return "forced spend: built road at " + i + "-" + j;
+                            return "Rolled " + roll + ", forced spend: built road at " + i + "-" + j;
                         }
                     }
                 }
             }
-            return "forced spend: could not build anything";
+            return "Rolled " + roll + ", forced spend: could not build anything";
         }
 
         int action = random.nextInt(3); // 0 = settlement, 1 = city, 2 = road.
@@ -67,7 +68,7 @@ class ComputerPlayer extends Player {
                 int randomIndex = random.nextInt(validSpots.size());
                 Intersection target = board.getIntersection(validSpots.get(randomIndex));
                 buildSettlement(board, target);
-                return "attempted settlement at " + validSpots.get(randomIndex);
+                return "Rolled " + roll + ", attempted settlement at " + validSpots.get(randomIndex);
             }
 
         } else if (action == 1) {
@@ -75,7 +76,7 @@ class ComputerPlayer extends Player {
                 int randomIndex = random.nextInt(playerSettlements.size());
                 Intersection target = playerSettlements.get(randomIndex).getBuildlocation();
                 buildCity(board, target);
-                return "attempted city at " + target.getIntersectionLocation();
+                return "Rolled " + roll + ", attempted city at " + target.getIntersectionLocation();
             }
 
         } else {
@@ -92,10 +93,10 @@ class ComputerPlayer extends Player {
                 int[] picked = validEdges.get(randomIndex);
                 Edge edge = new Edge(picked[0], picked[1]);
                 buildRoad(board, edge);
-                return "attempted road at edge " + picked[0] + "-" + picked[1];
+                return "Rolled " + roll + ", attempted road at edge " + picked[0] + "-" + picked[1];
             }
         }
 
-        return "no action taken";
+        return "Rolled " + roll + ", no action taken";
     }
 }

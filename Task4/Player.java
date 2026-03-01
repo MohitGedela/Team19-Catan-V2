@@ -112,7 +112,7 @@ abstract class Player {
 
     // If over 7 cards we must try to spend (settlement then city then road). Else
     // pick one build at random and try it.
-    public abstract String takeAction(Board board);
+    public abstract String takeAction(Board board, Turn turn);
 
     public List<Settlement> getPlayerSettlements() {
         return playerSettlements;

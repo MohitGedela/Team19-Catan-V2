@@ -4,18 +4,16 @@ import java.util.Scanner;
 
 class HumanPlayer extends Player {
     private Map<ResourceType, Integer> resources;
-    private Turn turn;
 
     public HumanPlayer(int playerNum, int playerVP, List<City> cities, List<Settlement> settlements, List<Road> roads,
-            Map<ResourceType, Integer> resources, Turn turn) {
+            Map<ResourceType, Integer> resources) {
         super(playerNum, playerVP, cities, settlements, roads, resources);
         this.resources = resources;
-        this.turn = turn;
     }
 
     // move
     @Override
-    public String takeAction(Board board) {
+    public String takeAction(Board board, Turn turn) {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {

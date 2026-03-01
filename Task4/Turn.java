@@ -18,19 +18,8 @@ class Turn {
     }
 
     public String execute(Player player, int roundNumber) {
-        if (player instanceof HumanPlayer) {
-            String actionResult = player.takeAction(board);
-            return "[" + roundNumber + "] / [" + player.getPlayerID() + "]: " + actionResult;
-        }
-        int roll = dice.roll();
-
-        if (roll == 7) {
-            robber.runRobber(player, players);
-        } else {
-            production.generateResources(roll);
-        }
-        String actionResult = player.takeAction(board);
-        return "[" + roundNumber + "] / [" + player.getPlayerID() + "]: Rolled " + roll + ", " + actionResult;
+        String actionResult = player.takeAction(board, this);
+        return "[" + roundNumber + "] / [" + player.getPlayerID() + "]: " + actionResult;
     }
 
     public int doRoll(Player player) {

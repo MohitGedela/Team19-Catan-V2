@@ -43,7 +43,7 @@ class Catan {
         players.add(p3);
 
         Turn turn = new Turn(dice, production, board, players);
-        Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>(), turn);
+        Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
         players.add(p4);
 
         // Put 2 settlements per player on the board (each gives 1 VP). First one each.
