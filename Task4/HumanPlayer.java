@@ -4,14 +4,15 @@ import java.util.Scanner;
 
 class HumanPlayer extends Player {
     private Map<ResourceType, Integer> resources;
+    private Turn turn;
 
     public HumanPlayer(int playerNum, int playerVP, List<City> cities, List<Settlement> settlements, List<Road> roads,
-            Map<ResourceType, Integer> resources) {
+            Map<ResourceType, Integer> resources, Turn turn) {
         super(playerNum, playerVP, cities, settlements, roads, resources);
         this.resources = resources;
+        this.turn = turn;
     }
 
-    // Fix this method's string returns to actually print the attempted human player
     // move
     @Override
     public String takeAction(Board board) {
@@ -26,10 +27,10 @@ class HumanPlayer extends Player {
             System.out.println("Build city [nodeID]");
             System.out.println("Build road [fromNodeID], [endID]");
 
-            String userInput = scanner.nextLine().trim(); // FIX ROLL IMPLEMENTATION
+            String userInput = scanner.nextLine().trim();
             if (userInput.matches("(?i)Roll")) {
-                int roll = doRoll(board);
-                return("Rolled a: " + roll);
+                int roll = turn.doRoll(this);
+                System.out.println("Rolled " + roll);
 
             } else if (userInput.matches("(?i)Build\\s+settlement\\s+\\d+")) {
                 String[] fragments = userInput.split("\\s+");
@@ -52,11 +53,7 @@ class HumanPlayer extends Player {
                 Edge tileEdge = new Edge(startNum, endNum);
                 buildRoad(board, tileEdge);
 
-                return ("Attempted to build a road starting from node: " + startNum + " to node: " + endNum); // Fix
-                                                                                                              // return
-                                                                                                              // the
-                                                                                                              // attempted
-                                                                                                              // move
+                return ("Attempted to build a road starting from node: " + startNum + " to node: " + endNum);
             } else if (userInput.matches("(?i)List")) {
                 System.out.println("Current resources:");
                 System.out.println(resources);
@@ -67,6 +64,6 @@ class HumanPlayer extends Player {
                 System.out.println("Invalid command try again!");
             }
         }
-        return "hi"; // Fix
+        return "ended turn";
     }
 }

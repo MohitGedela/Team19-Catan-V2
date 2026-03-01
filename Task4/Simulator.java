@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Scanner;
 
 // Runs round by round: each player rolls and takes one action, then we print VPs. Stops at 10 VP or max rounds.
 class Simulator {
@@ -16,6 +17,7 @@ class Simulator {
     public void runGame() {
         int round = 1;
         boolean gameOver = false;
+        Scanner scanner = new Scanner(System.in);
 
         while (!gameOver && round <= maxRounds) {
 
@@ -26,10 +28,17 @@ class Simulator {
                 System.out.println(result);
 
                 if (player.getVictoryPoints() >= 10) {
-                    System.out.println("Player " + player.getPlayerID() + " wins with " + player.getVictoryPoints() + " victory points!");
-
+                    System.out.println("Player " + player.getPlayerID() + " wins with " + player.getVictoryPoints()
+                            + " victory points!");
                     gameOver = true;
                     break;
+                }
+
+                if (!(player instanceof HumanPlayer)) {
+                    System.out.println("Enter Go to move forward to next turn.");
+                    while (!scanner.nextLine().trim().matches("(?i)Go")) {
+                        System.out.println("Enter Go to move forward to next turn.");
+                    }
                 }
             }
 
