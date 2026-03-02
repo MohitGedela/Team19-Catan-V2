@@ -12,7 +12,7 @@ public class Robber {
     }
 
     public void runRobber(Player rolledPlayer, List<Player> players) {
-        for (Player player: players) {
+        for (Player player : players) {
             player.discardCards(random);
         }
 
@@ -22,22 +22,21 @@ public class Robber {
         List<Player> playersToRemove = new ArrayList<>();
         availablePlayers.remove(rolledPlayer);
 
-        for (Player currentPlayer: availablePlayers) {
+        for (Player currentPlayer : availablePlayers) {
             if (currentPlayer.getTotalResources() == 0) {
                 playersToRemove.add(currentPlayer);
             }
         }
 
-        for (Player removePlayer: playersToRemove) {
+        for (Player removePlayer : playersToRemove) {
             availablePlayers.remove(removePlayer);
         }
 
         if (!availablePlayers.isEmpty()) {
             Player stealPlayer = availablePlayers.get(random.nextInt(availablePlayers.size()));
             stealPlayer.giveRandomResource(stealPlayer, random);
-        }
-        else {
-            System.out.println("No players to syeal from");
+        } else {
+            System.out.println("No players to steal from");
         }
     }
 }

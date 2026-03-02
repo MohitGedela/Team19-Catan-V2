@@ -32,32 +32,45 @@ class HumanPlayer extends Player {
 
             } else if (userInput.matches("(?i)Build\\s+settlement\\s+\\d+")) {
                 String[] fragments = userInput.split("\\s+");
-                int tileNum = Integer.parseInt(fragments[2]);
-                Intersection tileIntersection = new Intersection(tileNum);
-                buildSettlement(board, tileIntersection);
+                int nodeId = Integer.parseInt(fragments[2]);
+                Intersection tileIntersection = board.getIntersection(nodeId);
+                if (tileIntersection == null) {
+                    System.out.println("Invalid node ID: " + nodeId);
+                } else {
+                    buildSettlement(board, tileIntersection);
+                    System.out.println("Attempted to build a settlement at node: " + nodeId);
+                }
 
-                return ("Attempted to build a settlment at node: " + tileNum);
             } else if (userInput.matches("(?i)Build\\s+city\\s+\\d+")) {
                 String[] fragments = userInput.split("\\s+");
-                int tileNum = Integer.parseInt(fragments[2]);
-                Intersection tileIntersection = new Intersection(tileNum);
-                buildCity(board, tileIntersection);
+                int nodeId = Integer.parseInt(fragments[2]);
+                Intersection tileIntersection = board.getIntersection(nodeId);
+                if (tileIntersection == null) {
+                    System.out.println("Invalid node ID: " + nodeId);
+                } else {
+                    buildCity(board, tileIntersection);
+                    System.out.println("Attempted to build a city at node: " + nodeId);
+                }
 
-                return ("Attempted to build a city at node: " + tileNum); // Fix return the attempted move
             } else if (userInput.matches("(?i)Build\\s+road\\s+\\d+\\s+\\d+")) {
                 String[] fragments = userInput.split("\\s+");
                 int startNum = Integer.parseInt(fragments[2]);
                 int endNum = Integer.parseInt(fragments[3]);
-                Edge tileEdge = new Edge(startNum, endNum);
-                buildRoad(board, tileEdge);
+                if (!board.isValidEdge(startNum, endNum)) {
+                    System.out.println("Invalid edge: " + startNum + "-" + endNum);
+                } else {
+                    Edge tileEdge = new Edge(startNum, endNum);
+                    buildRoad(board, tileEdge);
+                    System.out.println("Attempted to build a road from node " + startNum + " to " + endNum);
+                }
 
-                return ("Attempted to build a road starting from node: " + startNum + " to node: " + endNum);
             } else if (userInput.matches("(?i)List")) {
                 System.out.println("Current resources:");
                 System.out.println(resources);
-                return "";
+
             } else if (userInput.matches("(?i)Go")) {
                 break;
+
             } else {
                 System.out.println("Invalid command try again!");
             }
