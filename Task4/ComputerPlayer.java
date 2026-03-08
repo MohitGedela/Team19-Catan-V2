@@ -5,9 +5,6 @@ import java.util.Random;
 
 // One player: their cards (resources), buildings (settlements/cities/roads), and VP. Can build if they have the right cards.
 class ComputerPlayer extends Player {
-    private int victoryPoints;
-    private List<Settlement> playerSettlements;
-    private List<Road> playerRoads;
 
     public ComputerPlayer(int playerNum, int playerVP, List<City> cities, List<Settlement> settlements, List<Road> roads, Map<ResourceType, Integer> resources) {
         super(playerNum, playerVP, cities, settlements, roads, resources);

@@ -31,4 +31,8 @@ class Turn {
         }
         return roll;
     }
+
+    public Board getBoard() {
+        return board;
+    }
 }

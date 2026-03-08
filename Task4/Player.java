@@ -6,12 +6,13 @@ import java.util.Random;
 
 // One player: their cards (resources), buildings (settlements/cities/roads), and VP. Can build if they have the right cards.
 abstract class Player {
-    private int playerID;
-    private int victoryPoints;
-    private List<City> playerCities;
-    private List<Settlement> playerSettlements;
-    private List<Road> playerRoads;
-    private Map<ResourceType, Integer> playerResources;
+    protected int playerID;
+    protected int victoryPoints;
+    protected List<City> playerCities;
+    protected List<Settlement> playerSettlements;
+    protected List<Road> playerRoads;
+    protected Map<ResourceType, Integer> playerResources;
+    protected Visualizer visualizer;
 
     public Player(int playerNum, int playerVP, List<City> cities, List<Settlement> settlements, List<Road> roads,
             Map<ResourceType, Integer> resources) {
@@ -25,6 +26,10 @@ abstract class Player {
 
     public void addResource(ResourceType resource, int quantity) {
         playerResources.put(resource, playerResources.getOrDefault(resource, 0) + quantity);
+    }
+
+    public void setVisualizer(Visualizer visualizer) {
+        this.visualizer = visualizer;
     }
 
     // Take cards from hand. Returns false if not enough.
@@ -75,6 +80,7 @@ abstract class Player {
             removeResource(ResourceType.Sheep, 1);
             removeResource(ResourceType.Wheat, 1);
             victoryPoints += 1;
+            visualizer.refresh();
         }
     }
 
@@ -97,6 +103,7 @@ abstract class Player {
 
             playerCities.add(new City(buildIntersection, this));
             victoryPoints += 1;
+            visualizer.refresh();
         }
     }
 
@@ -107,6 +114,7 @@ abstract class Player {
         if (board.placeRoad(buildEdge, this)) {
             removeResource(ResourceType.Brick, 1);
             removeResource(ResourceType.Wood, 1);
+            visualizer.refresh();
         }
     }
 
