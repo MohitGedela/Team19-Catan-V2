@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.List;
 
 class Visualizer {
+    // Colours Valid for the Visualizer
     private static final String[] PLAYER_COLORS = { "RED", "BLUE", "ORANGE", "WHITE" };
     private String filePath;
     private List<Player> players;
