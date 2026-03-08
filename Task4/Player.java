@@ -159,10 +159,10 @@ abstract class Player {
         if (cardsNum > 7) {
             int discardCount = cardsNum / 2;
             for (int i = 0; i < discardCount; i++) {
-                ResourceType card = getRandomResource(null);
+                ResourceType card = getRandomResource(random);
                 removeResource(card, 1);
             }
-            System.out.println("Player " + playerID + " discarded" + discardCount + " cards.");
+            System.out.println("Player " + playerID + " discarded " + discardCount + " cards.");
         }
     }
 

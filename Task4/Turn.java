@@ -8,6 +8,7 @@ class Turn {
     private Board board;
     private Robber robber;
     private List<Player> players;
+    private int currentRound;
 
     public Turn(Dice dice, Production production, Board board, List<Player> players) {
         this.dice = dice;
@@ -18,6 +19,7 @@ class Turn {
     }
 
     public String execute(Player player, int roundNumber) {
+        this.currentRound = roundNumber;
         String actionResult = player.takeAction(board, this);
         return "[" + roundNumber + "] / [" + player.getPlayerID() + "]: " + actionResult;
     }
@@ -25,6 +27,7 @@ class Turn {
     public int doRoll(Player player) {
         int roll = dice.roll();
         if (roll == 7) {
+            System.out.println("[" + currentRound + "] / [" + player.getPlayerID() + "]: Rolled 7, Robber activated");
             robber.runRobber(player, players);
         } else {
             production.generateResources(roll);

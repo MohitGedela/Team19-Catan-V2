@@ -21,28 +21,28 @@ class ComputerPlayer extends Player {
             for (int i = 0; i <= 53; i++) {
                 Intersection spot = board.getIntersection(i);
                 if (spot != null && spot.getBuilding() == null) {
-                    int vpBefore = victoryPoints;
+                    int vpBefore = getVictoryPoints();
                     buildSettlement(board, spot);
-                    if (victoryPoints > vpBefore) {
+                    if (getVictoryPoints() > vpBefore) {
                         return "Rolled " + roll + ", forced spend: built settlement at " + i;
                     }
                 }
             }
-            for (int i = 0; i < playerSettlements.size(); i++) {
-                Intersection spot = playerSettlements.get(i).getBuildlocation();
-                int vpBefore = victoryPoints;
+            for (int i = 0; i < getPlayerSettlements().size(); i++) {
+                Intersection spot = getPlayerSettlements().get(i).getBuildlocation();
+                int vpBefore = getVictoryPoints();
                 buildCity(board, spot);
-                if (victoryPoints > vpBefore) {
+                if (getVictoryPoints() > vpBefore) {
                     return "Rolled " + roll + ", forced spend: upgraded to city at " + spot.getIntersectionLocation();
                 }
             }
             for (int i = 0; i <= 53; i++) {
                 for (int j = i + 1; j <= 53; j++) {
                     if (board.isValidEdge(i, j)) {
-                        int roadsBefore = playerRoads.size();
+                        int roadsBefore = getPlayerRoads().size();
                         Edge edge = new Edge(i, j);
                         buildRoad(board, edge);
-                        if (playerRoads.size() > roadsBefore) {
+                        if (getPlayerRoads().size() > roadsBefore) {
                             return "Rolled " + roll + ", forced spend: built road at " + i + "-" + j;
                         }
                     }
@@ -69,9 +69,9 @@ class ComputerPlayer extends Player {
             }
 
         } else if (action == 1) {
-            if (!playerSettlements.isEmpty()) {
-                int randomIndex = random.nextInt(playerSettlements.size());
-                Intersection target = playerSettlements.get(randomIndex).getBuildlocation();
+            if (!getPlayerSettlements().isEmpty()) {
+                int randomIndex = random.nextInt(getPlayerSettlements().size());
+                Intersection target = getPlayerSettlements().get(randomIndex).getBuildlocation();
                 buildCity(board, target);
                 return "Rolled " + roll + ", attempted city at " + target.getIntersectionLocation();
             }
