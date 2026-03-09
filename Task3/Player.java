@@ -75,6 +75,7 @@ abstract class Player {
     public void buildSettlement(Board board, Intersection buildIntersection) {
         if (!checkResource(ResourceType.Wood, 1) || !checkResource(ResourceType.Brick, 1)
                 || !checkResource(ResourceType.Sheep, 1) || !checkResource(ResourceType.Wheat, 1)) {
+            // System.out.println("Not enough resources to build settlement");
             return;
         }
         if (board.placeSettlement(buildIntersection, this)) {
@@ -84,13 +85,18 @@ abstract class Player {
             removeResource(ResourceType.Wheat, 1);
             victoryPoints += 1;
             visualizer.refresh();
+            System.out.println("Succesfully built a settlement at node: " + buildIntersection.getIntersectionLocation());
         }
+        else {
+            System.out.println("Cannot build settlement at node " + buildIntersection.getIntersectionLocation() + " - spot is invalid or too close to another building.");
+        }
+        
     }
 
-    // Costs 2 wheat, 3 ore. Replaces one of your settlements with a city (same
-    // spot).
+    // Costs 2 wheat, 3 ore. Replaces one of your settlements with a city (same spot).
     public void buildCity(Board board, Intersection buildIntersection) {
         if (!checkResource(ResourceType.Wheat, 2) || !checkResource(ResourceType.Ore, 3)) {
+            // System.out.println("Not enough resources to build city");
             return;
         }
         if (board.placeCity(buildIntersection, this)) {
@@ -107,22 +113,32 @@ abstract class Player {
             playerCities.add(new City(buildIntersection, this));
             victoryPoints += 1;
             visualizer.refresh();
+            System.out.println("Succesfully built a city at node: " + buildIntersection.getIntersectionLocation());
+        } else {
+            System.out.println("Cannot build city at node " + buildIntersection.getIntersectionLocation() + " - no settlement there or not yours.");
         }
     }
 
     public void buildRoad(Board board, Edge buildEdge) {
+        int startNum = buildEdge.getStart();
+        int endNum = buildEdge.getEnd();
+
         if (!checkResource(ResourceType.Brick, 1) || !checkResource(ResourceType.Wood, 1)) {
+            // System.out.println("Not enough resources to build road");
             return;
         }
         if (board.placeRoad(buildEdge, this)) {
             removeResource(ResourceType.Brick, 1);
             removeResource(ResourceType.Wood, 1);
             visualizer.refresh();
+            System.out.println("Succesfully built a road from " + startNum + " to " + endNum);
+        }
+        else {
+            System.out.println("Cannot build road from " + startNum + " to " + endNum + " - not connected to your network.");
         }
     }
 
-    // If over 7 cards we must try to spend (settlement then city then road). Else
-    // pick one build at random and try it.
+    // If over 7 cards we must try to spend (settlement then city then road). Else pick one build at random and try it.
     public abstract String takeAction(Board board, Turn turn);
 
     public List<Settlement> getPlayerSettlements() {

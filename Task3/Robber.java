@@ -34,7 +34,7 @@ public class Robber {
 
         if (!availablePlayers.isEmpty()) {
             Player stealPlayer = availablePlayers.get(random.nextInt(availablePlayers.size()));
-            stealPlayer.giveRandomResource(stealPlayer, random);
+            stealPlayer.giveRandomResource(rolledPlayer, random);
         } else {
             System.out.println("No players to steal from");
         }

@@ -17,7 +17,7 @@ class HumanPlayer extends Player {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("Please enter one of the following commands:");
+            System.out.println("\nPlease enter one of the following commands:");
             System.out.println("Roll");
             System.out.println("Go");
             System.out.println("List");
@@ -38,7 +38,7 @@ class HumanPlayer extends Player {
                     System.out.println("Invalid node ID: " + nodeId);
                 } else {
                     buildSettlement(board, tileIntersection);
-                    System.out.println("Attempted to build a settlement at node: " + nodeId);
+                    // System.out.println("Attempted to build a settlement at node: " + nodeId);
                 }
 
             } else if (userInput.matches("(?i)Build\\s+city\\s+\\d+")) {
@@ -49,7 +49,7 @@ class HumanPlayer extends Player {
                     System.out.println("Invalid node ID: " + nodeId);
                 } else {
                     buildCity(board, tileIntersection);
-                    System.out.println("Attempted to build a city at node: " + nodeId);
+                    // System.out.println("Attempted to build a city at node: " + nodeId);
                 }
 
             } else if (userInput.matches("(?i)Build\\s+road\\s+\\d+\\s+\\d+")) {
@@ -61,7 +61,7 @@ class HumanPlayer extends Player {
                 } else {
                     Edge tileEdge = new Edge(startNum, endNum);
                     buildRoad(board, tileEdge);
-                    System.out.println("Attempted to build a road from node " + startNum + " to " + endNum);
+                    // System.out.println("Attempted to build a road from node " + startNum + " to " + endNum);
                 }
 
             } else if (userInput.matches("(?i)List")) {
@@ -84,7 +84,7 @@ class HumanPlayer extends Player {
         int settlementNode = -1;
 
         while (true) {
-            System.out.print("Player " + playerID + ", place your settlement (node 0-53): ");
+            System.out.print("\nPlayer " + playerID + ", place your settlement (node 0-53): ");
             String input = scanner.nextLine().trim();
             try {
                 int nodeID = Integer.parseInt(input);
@@ -117,9 +117,7 @@ class HumanPlayer extends Player {
                 System.out.println("Invalid road placement."); 
             }
 
-            } catch (NumberFormatException e) { 
-                System.out.println("Enter a valid number."); 
-            }
+            } catch (NumberFormatException e) { System.out.println("Enter a valid number."); }
         }
     }
 }

@@ -21,7 +21,7 @@ class Turn {
     public String execute(Player player, int roundNumber) {
         this.currentRound = roundNumber;
         String actionResult = player.takeAction(board, this);
-        return "[" + roundNumber + "] / [" + player.getPlayerID() + "]: " + actionResult;
+        return "\n[" + roundNumber + "] / [" + player.getPlayerID() + "]: " + actionResult;
     }
 
     public int doRoll(Player player) {
