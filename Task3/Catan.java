@@ -59,56 +59,7 @@ class Catan {
         // Each player places 2 initial settlements
         for (int round = 0; round < 2; round++) {
             for (Player player : players) {
-                if (player instanceof HumanPlayer) {
-                    while (true) {
-                        System.out.print("Player " + player.getPlayerID() + ", place your settlement (enter node ID 0-53): ");
-                        String input = inputScanner.nextLine().trim();
-                        try {
-                            int nodeID = Integer.parseInt(input);
-                            if (nodeID < 0 || nodeID > 53) {
-                                System.out.println("Invalid node. Must be between 0 and 53.");
-                                continue;
-                            }
-                            Intersection spot = board.getIntersection(nodeID);
-                            if (board.placeSettlement(spot, player)) {
-                                player.addVictoryPoint();
-                                visualizer.refresh();
-                                Thread.sleep(600);
-                                break;
-                            } else {
-                                System.out.println("Invalid spot, try another node.");
-                            }
-                        } catch (NumberFormatException e) {
-                            System.out.println("Please enter a valid number.");
-                        }
-                    }
-                } else {
-                    // Computer picks a random valid spot
-                    List<Integer> validSpots = new ArrayList<>();
-                    for (int i = 0; i <= 53; i++) {
-                        Intersection spot = board.getIntersection(i);
-                        if (spot.getBuilding() == null) {
-                            boolean valid = true;
-                            for (int neighbour : board.getNeighbouringIntersections(i)) {
-                                if (board.getIntersection(neighbour).getBuilding() != null) {
-                                    valid = false;
-                                    break;
-                                }
-                            }
-                            if (valid) validSpots.add(i);
-                        }
-                    }
-                    int picked = validSpots.get(random.nextInt(validSpots.size()));
-                    board.placeSettlement(board.getIntersection(picked), player);
-                    player.addVictoryPoint();
-                    System.out.println("Player " + player.getPlayerID() + " placed settlement at node " + picked);
-                    visualizer.refresh();
-                    Thread.sleep(600);
-                    System.out.println("Enter Go to continue.");
-                    while (!inputScanner.nextLine().trim().matches("(?i)Go")) {
-                        System.out.println("Enter Go to continue.");
-                    }
-                }
+                player.initialSetup(board, inputScanner, visualizer);
             }
         }
 

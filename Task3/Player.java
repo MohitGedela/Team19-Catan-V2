@@ -3,6 +3,7 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Scanner;
 
 // One player: their cards (resources), buildings (settlements/cities/roads), and VP. Can build if they have the right cards.
 abstract class Player {
@@ -31,6 +32,8 @@ abstract class Player {
     public void setVisualizer(Visualizer visualizer) {
         this.visualizer = visualizer;
     }
+
+    public abstract void initialSetup(Board board, Scanner scanner, Visualizer visualizer);
 
     // Take cards from hand. Returns false if not enough.
     public boolean removeResource(ResourceType resource, int quantity) {

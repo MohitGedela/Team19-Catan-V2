@@ -77,4 +77,49 @@ class HumanPlayer extends Player {
         }
         return "ended turn";
     }
+
+    @Override
+    public void initialSetup(Board board, Scanner scanner, Visualizer visualizer) {
+
+        int settlementNode = -1;
+
+        while (true) {
+            System.out.print("Player " + playerID + ", place your settlement (node 0-53): ");
+            String input = scanner.nextLine().trim();
+            try {
+                int nodeID = Integer.parseInt(input);
+                Intersection spot = board.getIntersection(nodeID);
+                if (spot == null || nodeID < 0 || nodeID > 53) { System.out.println("Invalid node."); continue; }
+                if (board.placeSettlement(spot, this)) {
+                    addVictoryPoint();
+                    settlementNode = nodeID;
+                    visualizer.refresh();
+                    break;
+                } else 
+                    { System.out.println("Invalid spot, try another."); }
+            } catch (NumberFormatException e) { System.out.println("Enter a valid number."); }
+        }
+
+        while (true) {
+            System.out.print("Player " + playerID + ", place your road (enter adjacent node to " + settlementNode + "): ");
+            String input = scanner.nextLine().trim();
+            try {
+            int endNode = Integer.parseInt(input);
+            if (!board.isValidEdge(settlementNode, endNode)) { 
+                System.out.println("Not adjacent to your settlement."); 
+                continue; 
+            }
+            Edge edge = new Edge(settlementNode, endNode);
+            if (board.placeRoad(edge, this)) {
+                visualizer.refresh();
+                break;
+            } else { 
+                System.out.println("Invalid road placement."); 
+            }
+
+            } catch (NumberFormatException e) { 
+                System.out.println("Enter a valid number."); 
+            }
+        }
+    }
 }

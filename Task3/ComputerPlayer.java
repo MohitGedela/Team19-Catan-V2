@@ -2,6 +2,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 // One player: their cards (resources), buildings (settlements/cities/roads), and VP. Can build if they have the right cards.
 class ComputerPlayer extends Player {
@@ -95,5 +96,52 @@ class ComputerPlayer extends Player {
         }
 
         return "Rolled " + roll + ", no action taken";
+    }
+
+    @Override
+    public void initialSetup(Board board, Scanner scanner, Visualizer visualizer) {
+        Random random = new Random();
+    
+        // Place settlement
+        List<Integer> validSpots = new ArrayList<>();
+        for (int i = 0; i <= 53; i++) {
+            Intersection spot = board.getIntersection(i);
+            boolean valid = spot.getBuilding() == null;
+            for (int neighbour : board.getNeighbouringIntersections(i)) {
+                if (board.getIntersection(neighbour).getBuilding() != null) { 
+                    valid = false; 
+                    break; 
+                }
+            }
+            if (valid) {
+                validSpots.add(i);
+            }
+        }
+
+        int picked = validSpots.get(random.nextInt(validSpots.size()));
+        board.placeSettlement(board.getIntersection(picked), this);
+        addVictoryPoint();
+        System.out.println("Player " + playerID + " placed settlement at node " + picked);
+        visualizer.refresh();
+
+        // Place adjacent road
+        List<Integer> neighbours = board.getNeighbouringIntersections(picked);
+        int roadEnd = neighbours.get(random.nextInt(neighbours.size()));
+
+        Edge edge = new Edge(picked, roadEnd);
+        board.placeRoad(edge, this); // skip resource cost during setup
+        System.out.println("Player " + playerID + " placed road at " + picked + "-" + roadEnd);
+        visualizer.refresh();
+
+        try {
+            Thread.sleep(600);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        System.out.println("Enter Go to continue.");
+        while (!scanner.nextLine().trim().matches("(?i)Go")) {
+            System.out.println("Enter Go to continue.");
+        }
     }
 }
