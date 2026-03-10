@@ -122,6 +122,7 @@ class Board {
         if (existing instanceof Settlement && existing.getOwner() == player) {
             City city = new City(placeIntersection, player);
             placeIntersection.setBuilding(city);
+            placeIntersection.setOwner(player);
             return true;
         }
         return false;
@@ -171,10 +172,11 @@ class Board {
     }
 
     public void moveRobber(Random random) {
-        int moveTile = 0;
-        while (moveTile == robberHexID) {
+        int moveTile;
+        do {
             moveTile = random.nextInt(19);
         }
+        while (moveTile == robberHexID);
         robberHexID = moveTile;
     }
 

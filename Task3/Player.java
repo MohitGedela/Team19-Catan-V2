@@ -113,7 +113,6 @@ abstract class Player {
             playerCities.add(new City(buildIntersection, this));
             victoryPoints += 1;
             visualizer.refresh();
-            System.out.println("Succesfully built a city at node: " + buildIntersection.getIntersectionLocation());
         } else {
             System.out.println("Cannot build city at node " + buildIntersection.getIntersectionLocation() + " - no settlement there or not yours.");
         }
@@ -185,12 +184,13 @@ abstract class Player {
         }
     }
 
-    public void giveRandomResource(Player newPlayer, Random random) {
+    public String giveRandomResource(Player newPlayer, Random random) {
         if (getTotalResources() != 0) {
             ResourceType card = getRandomResource(random);
             removeResource(card, 1);
             newPlayer.addResource(card, 1);
-            System.out.println("Player " + newPlayer.getPlayerID() + " stole " + card + " to Player " + playerID);
+            return(", Player " + newPlayer.getPlayerID() + " stole " + card + " from Player " + playerID);
         }
+        return(", No players to steal from");
     }
 }

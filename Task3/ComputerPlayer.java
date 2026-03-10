@@ -7,20 +7,27 @@ import java.util.Scanner;
 // One player: their cards (resources), buildings (settlements/cities/roads), and VP. Can build if they have the right cards.
 class ComputerPlayer extends Player {
 
-    private Random random = new Random(); // FIX: single Random instance instead of creating new one every call
+    private Random random = new Random();
 
     public ComputerPlayer(int playerNum, int playerVP, List<City> cities, List<Settlement> settlements, List<Road> roads, Map<ResourceType, Integer> resources) {
         super(playerNum, playerVP, cities, settlements, roads, resources);
     }
 
-    // If over 7 cards we must try to spend (settlement then city then road). Else
-    // pick one build at random and try it.
     @Override
     public String takeAction(Board board, Turn turn) {
         int roll = turn.doRoll(this);
 
         if (getTotalResources() > 7) {
-            // Try settlement
+            // Try city FIRST - more likely to succeed since player already has settlements
+            for (int i = 0; i < getPlayerSettlements().size(); i++) {
+                Intersection spot = getPlayerSettlements().get(i).getBuildlocation();
+                int vpBefore = getVictoryPoints();
+                buildCity(board, spot);
+                if (getVictoryPoints() > vpBefore) {
+                    return "Rolled " + roll + ", forced spend: upgraded settlement to city at node " + spot.getIntersectionLocation();
+                }
+            }
+            // Try settlement second
             for (int i = 0; i <= 53; i++) {
                 Intersection spot = board.getIntersection(i);
                 if (spot != null && spot.getBuilding() == null) {
@@ -31,16 +38,7 @@ class ComputerPlayer extends Player {
                     }
                 }
             }
-            // Try city
-            for (int i = 0; i < getPlayerSettlements().size(); i++) {
-                Intersection spot = getPlayerSettlements().get(i).getBuildlocation();
-                int vpBefore = getVictoryPoints();
-                buildCity(board, spot);
-                if (getVictoryPoints() > vpBefore) {
-                    return "Rolled " + roll + ", forced spend: upgraded settlement to city at node " + spot.getIntersectionLocation();
-                }
-            }
-            // Try road
+            // Try road last
             for (int i = 0; i <= 53; i++) {
                 for (int j = i + 1; j <= 53; j++) {
                     if (board.isValidEdge(i, j)) {
@@ -117,15 +115,14 @@ class ComputerPlayer extends Player {
 
     @Override
     public void initialSetup(Board board, Scanner scanner, Visualizer visualizer) {
-        // Place settlement
         List<Integer> validSpots = new ArrayList<>();
         for (int i = 0; i <= 53; i++) {
             Intersection spot = board.getIntersection(i);
-            if (spot == null) continue; // FIX: null check to prevent NullPointerException
+            if (spot == null) continue;
             boolean valid = spot.getBuilding() == null;
             for (int neighbour : board.getNeighbouringIntersections(i)) {
                 Intersection n = board.getIntersection(neighbour);
-                if (n == null) continue; // FIX: null check for neighbours
+                if (n == null) continue;
                 if (n.getBuilding() != null) {
                     valid = false;
                     break;
@@ -142,7 +139,6 @@ class ComputerPlayer extends Player {
         System.out.println("\nPlayer " + playerID + " placed settlement at node " + picked);
         visualizer.refresh();
 
-        // Place adjacent road
         List<Integer> neighbours = board.getNeighbouringIntersections(picked);
         int roadEnd = neighbours.get(random.nextInt(neighbours.size()));
 

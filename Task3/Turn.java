@@ -27,7 +27,8 @@ class Turn {
     public int doRoll(Player player) {
         int roll = dice.roll();
         if (roll == 7) {
-            System.out.println("[" + currentRound + "] / [" + player.getPlayerID() + "]: Rolled 7, Robber activated");
+            String robberResult = robber.runRobber(player, players);
+            System.out.println("[" + currentRound + "] / [" + player.getPlayerID() + "]: Rolled 7, Robber activated" + robberResult);
             robber.runRobber(player, players);
         } else {
             production.generateResources(roll);
