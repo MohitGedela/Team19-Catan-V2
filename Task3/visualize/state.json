@@ -3,6 +3,8 @@
 
   ],
   "buildings": [
-    
+    { "node": 31, "owner": "RED", "type": "SETTLEMENT" },
+    { "node": 3, "owner": "BLUE", "type": "SETTLEMENT" },
+    { "node": 7, "owner": "ORANGE", "type": "SETTLEMENT" }
   ]
 }
