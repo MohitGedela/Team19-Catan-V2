@@ -5,8 +5,8 @@
     { "a": 46, "b": 45, "owner": "ORANGE" }
   ],
   "buildings": [
-    { "node": 1, "owner": "RED", "type": "SETTLEMENT" },
-    { "node": 16, "owner": "BLUE", "type": "SETTLEMENT" },
-    { "node": 46, "owner": "ORANGE", "type": "SETTLEMENT" }
-  ]
+    { "node": 31, "owner": "RED", "type": "SETTLEMENT" },
+    { "node": 3, "owner": "BLUE", "type": "SETTLEMENT" },
+    { "node": 7, "owner": "ORANGE", "type": "SETTLEMENT" }
+ ]
 }
