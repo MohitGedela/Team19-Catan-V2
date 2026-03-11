@@ -12,8 +12,8 @@ class Production {
     public void generateResources(int diceRollNum) {
 
         for (HexTerrain hex : board.getHexes()) {
-            if (!hex.productionStatus()) {
-                continue; // Skip desert.
+            if (!hex.productionStatus() || hex.getHexID() == board.getRobberHexID()) {
+                continue;
             }
 
             HexBoardNum boardNumber = hex.getHexNumber();

@@ -1,19 +1,20 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 /**
- * This demonstrator class demonstrates the key functionality of the Catan simulator,
+ * This demonstrator class demonstrates the key functionality of the Catan
+ * simulator,
  * including the players - human player and computer player, robber activation,
  * resource production, building placement, and visualizer integration.
  *
- * R2.1  - Human player accepts typed commands validated by regex
- * R2.2/3 - Visualizer writes board state to visualize/state.json after each action
- * R2.4  - Human player uses "Go" command to step forward between turns
- * R2.5  - Rolling 7 triggers the Robber: discard, move, steal
- * R1.8  - Players with >7 cards are forced to spend before normal action
+ * R2.1 - Human player accepts typed commands validated by regex
+ * R2.2/3 - Visualizer writes board state to visualize/state.json after each
+ * action
+ * R2.4 - Human player uses "Go" command to step forward between turns
+ * R2.5 - Rolling 7 triggers the Robber: discard, move, steal
+ * R1.8 - Players with >7 cards are forced to spend before normal action
  */
 class Demonstrator {
 
@@ -62,8 +63,10 @@ class Demonstrator {
 
         // *** HUMAN PLAYER (R2.1, R2.4) ***
         // HumanPlayer.takeAction() reads commands from stdin using regex validation.
-        // Valid commands: Roll, Go, List, Build settlement [n], Build city [n], Build road [n] [n]
-        // "Go" steps the game forward (R2.4). All other commands block until Roll is used first.
+        // Valid commands: Roll, Go, List, Build settlement [n], Build city [n], Build
+        // road [n] [n]
+        // "Go" steps the game forward (R2.4). All other commands block until Roll is
+        // used first.
         ParseCommand parser = new ParseCommand();
         Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new HashMap<>(), parser);
 
@@ -130,12 +133,12 @@ class Demonstrator {
         // Each turn: dice roll → resource production OR robber (if 7) → player action.
         //
         // R2.5: Rolling 7 triggers the Robber:
-        //   1. All players with >7 cards discard half (R1.8)
-        //   2. Robber moves to a new random non-desert tile
-        //   3. Roller steals one random resource from an adjacent player
+        // 1. All players with >7 cards discard half (R1.8)
+        // 2. Robber moves to a new random non-desert tile
+        // 3. Roller steals one random resource from an adjacent player
         //
         // R1.8: If a player has >7 cards on their turn (non-robber),
-        //   they are forced to spend before taking a normal action.
+        // they are forced to spend before taking a normal action.
         //
         // Human player turn: type commands, "Go" to end turn.
         // Computer player turn: automated, press "Go" to advance.

@@ -43,7 +43,8 @@ class HumanPlayer extends Player {
 
             String result = command.execute(this, board, turn);
 
-            if (command.endsTurn()) break;
+            if (command.endsTurn())
+                break;
 
             if (!command.requiresRoll() && !hasRolled) {
                 hasRolled = true;
