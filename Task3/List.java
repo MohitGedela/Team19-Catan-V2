@@ -18,12 +18,8 @@ class List implements Command {
     }
 
     @Override
-    public boolean isGo() {
-        return false;
-    }
+    public boolean endsTurn() { return false; }
 
     @Override
-    public boolean isRoll() {
-        return false;
-    }
+    public boolean requiresRoll() { return true; }
 }

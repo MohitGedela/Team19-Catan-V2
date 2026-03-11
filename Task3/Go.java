@@ -5,12 +5,8 @@ class Go implements Command {
     }
 
     @Override
-    public boolean isGo() {
-        return true;
-    }
+    public boolean endsTurn() { return true; }
 
     @Override
-    public boolean isRoll() {
-        return false;
-    }
+    public boolean requiresRoll() { return true; }
 }

@@ -6,14 +6,11 @@ class Build implements Command {
     }
 
     @Override
-    public boolean isGo() {
-        return false;
-    }
+    public boolean endsTurn() { return false; }
 
     @Override
-    public boolean isRoll() {
-        return false;
-    }
+    public boolean requiresRoll() { return true; }
+
 
     @Override
     public String execute(Player player, Board board, Turn turn) {

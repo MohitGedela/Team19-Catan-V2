@@ -5,12 +5,8 @@ class Roll implements Command {
     }
 
     @Override
-    public boolean isGo() {
-        return false;
-    }
+    public boolean endsTurn() { return false; }
 
     @Override
-    public boolean isRoll() {
-        return true;
-    }
+    public boolean requiresRoll() { return false; }
 }
