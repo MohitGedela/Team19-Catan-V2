@@ -1,4 +1,5 @@
 class ResourceHex extends HexTerrain{
+    
     private ResourceType resource;
 
     public ResourceHex(int hexID, HexBoardNum hexNumber, ResourceType resource) {

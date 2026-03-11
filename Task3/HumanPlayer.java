@@ -3,6 +3,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 class HumanPlayer extends Player {
+    
     private ParseCommand parser;
 
     public HumanPlayer(int playerNum, int playerVP, List<Building> buildings, List<Road> roads,

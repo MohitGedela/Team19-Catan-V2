@@ -6,6 +6,7 @@ import java.util.List;
 
 // The map: 54 corners (intersections), 19 hexes with resources and numbers. Tracks where buildings and roads are.
 class Board {
+
     private int[][] tilesNodes = { 
         { 42, 40, 41, 16, 18, 38 }, { 41, 43, 44, 19, 17, 16 }, { 44, 45, 46, 47, 20, 19 },
         { 39, 38, 18, 13, 15, 35 }, { 18, 16, 17, 0, 5, 13 }, { 17, 19, 20, 21, 1, 0 },
@@ -25,6 +26,7 @@ class Board {
     public Board() {
         intersections = new HashMap<>();
         robberHexID = 9;
+
         for (int i = 0; i <= 53; i++) {
             intersections.put(i, new Intersection(i));
         }
@@ -32,11 +34,11 @@ class Board {
         tiles = new HashMap<>();
 
         ResourceType[] resources = {
-            ResourceType.Wood, ResourceType.Wood, ResourceType.Wood, ResourceType.Wood,
-            ResourceType.Brick, ResourceType.Brick, ResourceType.Brick,
-            ResourceType.Wheat, ResourceType.Wheat, ResourceType.Wheat, ResourceType.Wheat,
-            ResourceType.Sheep, ResourceType.Sheep, ResourceType.Sheep, ResourceType.Sheep,
-            ResourceType.Ore, ResourceType.Ore, ResourceType.Ore
+            ResourceType.WOOD, ResourceType.WOOD, ResourceType.WOOD, ResourceType.WOOD,
+            ResourceType.BRICK, ResourceType.BRICK, ResourceType.BRICK,
+            ResourceType.WHEAT, ResourceType.WHEAT, ResourceType.WHEAT, ResourceType.WHEAT,
+            ResourceType.SHEEP, ResourceType.SHEEP, ResourceType.SHEEP, ResourceType.SHEEP,
+            ResourceType.ORE, ResourceType.ORE, ResourceType.ORE
         };
 
         int[] numbers = { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
@@ -44,6 +46,7 @@ class Board {
         tiles.put(9, new DesertHex(9));
 
         int resourceIndex = 0;
+
         for (int i = 0; i < 19; i++) {
             if (i == 9) {
                 continue;
@@ -53,8 +56,7 @@ class Board {
         }
     }
 
-    // True if the two corners are next to each other on the hex map (share an
-    // edge).
+    // True if the two corners are next to each other on the hex map (share an edge).
     public boolean isValidEdge(int start, int end) {
         for (int i = 0; i < 19; i++) {
             for (int j = 0; j < 6; j++) {
@@ -93,8 +95,7 @@ class Board {
         return intersections.get(intersectionID);
     }
 
-    // Ok if spot is empty and no neighbour has a building (and player has < 2), or
-    // if spot is connected by player's road.
+    // Ok if spot is empty and no neighbour has a building (and player has < 2), or if spot is connected by player's road.
     public boolean placeSettlement(Intersection placeIntersection, Player player) {
         if (rules.checkEmptyIntersections(placeIntersection.getIntersectionLocation(), this)) {
             if (player.getSettlements().size() < 2) {
@@ -136,8 +137,7 @@ class Board {
         return false;
     }
 
-    // Road must be on a valid edge, not taken, and next to your building or your
-    // road.
+    // Road must be on a valid edge, not taken, and next to your building or your road.
     public boolean placeRoad(Edge placeEdge, Player player) {
         if (rules.checkRoadPlacement(placeEdge, player, this)) {
             Road road = new Road(player, placeEdge);

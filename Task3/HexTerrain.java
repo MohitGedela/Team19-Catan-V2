@@ -1,4 +1,5 @@
 abstract class HexTerrain {
+    
     private int hexID;
     private HexBoardNum hexNumber;
 

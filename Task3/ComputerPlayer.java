@@ -25,6 +25,7 @@ class ComputerPlayer extends Player {
                     return rollResult + ", forced spend: " + result;
                 }
             }
+
             for (int i = 0; i <= 53; i++) {
                 Intersection spot = board.getIntersection(i);
                 if (spot != null && spot.getBuilding() == null) {
@@ -34,6 +35,7 @@ class ComputerPlayer extends Player {
                     }
                 }
             }
+
             for (int i = 0; i <= 53; i++) {
                 for (int j = i + 1; j <= 53; j++) {
                     if (board.isValidEdge(i, j)) {
@@ -58,6 +60,7 @@ class ComputerPlayer extends Player {
                     validSpots.add(i);
                 }
             }
+            
             if (!validSpots.isEmpty()) {
                 int randomIndex = random.nextInt(validSpots.size());
                 int nodeId = validSpots.get(randomIndex);

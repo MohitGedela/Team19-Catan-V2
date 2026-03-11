@@ -1,5 +1,6 @@
 interface Command {
-    String execute(Player player, Board board, Turn turn);
-    boolean endsTurn();
-    boolean requiresRoll();
+
+    public String execute(Player player, Board board, Turn turn);
+    public boolean endsTurn();
+    public boolean requiresRoll();
 }

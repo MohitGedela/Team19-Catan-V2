@@ -1,4 +1,5 @@
 class Build implements Command {
+    
     private String input;
 
     public Build(String input) {
@@ -10,7 +11,6 @@ class Build implements Command {
 
     @Override
     public boolean requiresRoll() { return true; }
-
 
     @Override
     public String execute(Player player, Board board, Turn turn) {

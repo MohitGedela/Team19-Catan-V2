@@ -1,4 +1,5 @@
 class List implements Command {
+    
     @Override
     public String execute(Player player, Board board, Turn turn) {
         StringBuilder sb = new StringBuilder("Resources: ");
@@ -18,8 +19,12 @@ class List implements Command {
     }
 
     @Override
-    public boolean endsTurn() { return false; }
+    public boolean endsTurn() { 
+        return false; 
+    }
 
     @Override
-    public boolean requiresRoll() { return true; }
+    public boolean requiresRoll() { 
+        return true; 
+    }
 }

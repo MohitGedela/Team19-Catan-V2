@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 abstract class Player {
+
     protected int playerID;
     protected int victoryPoints;
     protected List<Building> playerBuildings;
@@ -72,15 +73,17 @@ abstract class Player {
 
     public String buildSettlement(Board board, Intersection buildIntersection) {
         int nodeId = buildIntersection.getIntersectionLocation();
-        if (!checkResource(ResourceType.Wood, 1) || !checkResource(ResourceType.Brick, 1)
-                || !checkResource(ResourceType.Sheep, 1) || !checkResource(ResourceType.Wheat, 1)) {
+
+        if (!checkResource(ResourceType.WOOD, 1) || !checkResource(ResourceType.BRICK, 1)
+            || !checkResource(ResourceType.SHEEP, 1) || !checkResource(ResourceType.WHEAT, 1)) {
             return "failed to build settlement at node " + nodeId + " (insufficient resources)";
         }
+
         if (board.placeSettlement(buildIntersection, this)) {
-            removeResource(ResourceType.Wood, 1);
-            removeResource(ResourceType.Brick, 1);
-            removeResource(ResourceType.Sheep, 1);
-            removeResource(ResourceType.Wheat, 1);
+            removeResource(ResourceType.WOOD, 1);
+            removeResource(ResourceType.BRICK, 1);
+            removeResource(ResourceType.SHEEP, 1);
+            removeResource(ResourceType.WHEAT, 1);
             victoryPoints += 1;
             return "built settlement at node " + nodeId;
         }
@@ -89,12 +92,12 @@ abstract class Player {
 
     public String buildCity(Board board, Intersection buildIntersection) {
         int nodeId = buildIntersection.getIntersectionLocation();
-        if (!checkResource(ResourceType.Wheat, 2) || !checkResource(ResourceType.Ore, 3)) {
+        if (!checkResource(ResourceType.WHEAT, 2) || !checkResource(ResourceType.ORE, 3)) {
             return "failed to upgrade to city at node " + nodeId + " (insufficient resources)";
         }
         if (board.placeCity(buildIntersection, this)) {
-            removeResource(ResourceType.Wheat, 2);
-            removeResource(ResourceType.Ore, 3);
+            removeResource(ResourceType.WHEAT, 2);
+            removeResource(ResourceType.ORE, 3);
             for (int i = 0; i < playerBuildings.size(); i++) {
                 if (playerBuildings.get(i).getBuildlocation() == buildIntersection) {
                     playerBuildings.set(i, playerBuildings.get(i).upgrade(this));
@@ -110,12 +113,12 @@ abstract class Player {
     public String buildRoad(Board board, Edge buildEdge) {
         int startNum = buildEdge.getStart();
         int endNum = buildEdge.getEnd();
-        if (!checkResource(ResourceType.Brick, 1) || !checkResource(ResourceType.Wood, 1)) {
+        if (!checkResource(ResourceType.BRICK, 1) || !checkResource(ResourceType.WOOD, 1)) {
             return "failed to build road from " + startNum + " to " + endNum + " (insufficient resources)";
         }
         if (board.placeRoad(buildEdge, this)) {
-            removeResource(ResourceType.Brick, 1);
-            removeResource(ResourceType.Wood, 1);
+            removeResource(ResourceType.BRICK, 1);
+            removeResource(ResourceType.WOOD, 1);
             return "built road from " + startNum + " to " + endNum;
         }
         return "failed to build road from " + startNum + " to " + endNum + " (not connected)";
