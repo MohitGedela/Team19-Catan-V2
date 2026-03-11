@@ -11,7 +11,7 @@ public class Robber {
         this.random = random;
     }
 
-    public void runRobber(Player rolledPlayer, List<Player> players) {
+    public String runRobber(Player rolledPlayer, List<Player> players) {
         for (Player player : players) {
             player.discardCards(random);
         }
@@ -34,9 +34,9 @@ public class Robber {
 
         if (!availablePlayers.isEmpty()) {
             Player stealPlayer = availablePlayers.get(random.nextInt(availablePlayers.size()));
-            stealPlayer.giveRandomResource(rolledPlayer, random);
+            return stealPlayer.giveRandomResource(rolledPlayer, random);
         } else {
-            System.out.println("No players to steal from");
+            return ", No players to steal from";
         }
     }
 }
