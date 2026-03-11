@@ -33,10 +33,12 @@ class HumanPlayer extends Player {
                 System.out.println("Invalid command, try again!");
                 continue;
             }
+
             if (!hasRolled && command.requiresRoll()) {
                 System.out.println("You must roll first!");
                 continue;
             }
+            
             if (!command.requiresRoll() && hasRolled) {
                 System.out.println("You already rolled this turn!");
                 continue;
