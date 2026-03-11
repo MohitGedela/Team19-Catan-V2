@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.List;
 
 class Visualizer {
+    
     // Colours Valid for the Visualizer
     private static final String[] PLAYER_COLORS = { "RED", "BLUE", "ORANGE", "WHITE" };
     private String filePath;
@@ -52,7 +53,7 @@ class Visualizer {
                 Building building = intersection.getBuilding();
                 if (building != null && building.getOwner() == player) {
                     if (!firstBuilding) json.append(",\n");
-                    String type = (building instanceof City) ? "CITY" : "SETTLEMENT";
+                    String type = building.getBuildingType().name();
                     json.append("    { \"node\": " + i + ", \"owner\": \"" + color + "\", \"type\": \"" + type + "\" }");
                     firstBuilding = false;
                 }

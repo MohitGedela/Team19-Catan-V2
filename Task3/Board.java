@@ -6,12 +6,13 @@ import java.util.List;
 
 // The map: 54 corners (intersections), 19 hexes with resources and numbers. Tracks where buildings and roads are.
 class Board {
+
     private int[][] tilesNodes = { 
-        { 41, 42, 40, 18, 17, 39 }, { 40, 44, 43, 21, 16, 18 }, { 43, 45, 47, 46, 19, 21 },
-        { 38, 39, 17, 15, 14, 37 }, { 17, 18, 16, 5, 4, 15 }, { 16, 21, 19, 20, 0, 5 },
-        { 19, 46, 48, 49, 22, 20 }, { 36, 37, 14, 13, 32, 35 }, { 14, 15, 4, 3, 12, 13 },
-        { 4, 5, 0, 1, 2, 3 }, { 0, 20, 22, 23, 6, 1 }, { 22, 49, 50, 51, 52, 23 },
-        { 34, 13, 12, 11, 32, 33 }, { 12, 3, 2, 9, 10, 11 }, { 2, 1, 6, 7, 8, 9 },
+        { 42, 40, 41, 16, 18, 38 }, { 41, 43, 44, 19, 17, 16 }, { 44, 45, 46, 47, 20, 19 },
+        { 39, 38, 18, 13, 15, 35 }, { 18, 16, 17, 0, 5, 13 }, { 17, 19, 20, 21, 1, 0 },
+        { 20, 47, 48, 49, 22, 21 }, { 37, 35, 15, 14, 34, 36 }, { 15, 13, 5, 4, 12, 14 },
+        { 5, 0, 1, 2, 3, 4 }, { 1, 21, 22, 23, 6, 2 }, { 22, 49, 50, 51, 52, 23 },
+        { 34, 14, 12, 11, 32, 33 }, { 12, 4, 3, 9, 10, 11 }, { 3, 2, 6, 7, 8, 9 },
         { 6, 23, 52, 53, 24, 7 }, { 32, 11, 10, 29, 30, 31 }, { 10, 9, 8, 27, 28, 29 },
         { 8, 7, 24, 25, 26, 27 } 
     };
@@ -25,6 +26,7 @@ class Board {
     public Board() {
         intersections = new HashMap<>();
         robberHexID = 9;
+
         for (int i = 0; i <= 53; i++) {
             intersections.put(i, new Intersection(i));
         }
@@ -32,11 +34,11 @@ class Board {
         tiles = new HashMap<>();
 
         ResourceType[] resources = {
-            ResourceType.Wood, ResourceType.Wood, ResourceType.Wood, ResourceType.Wood,
-            ResourceType.Brick, ResourceType.Brick, ResourceType.Brick,
-            ResourceType.Wheat, ResourceType.Wheat, ResourceType.Wheat, ResourceType.Wheat,
-            ResourceType.Sheep, ResourceType.Sheep, ResourceType.Sheep, ResourceType.Sheep,
-            ResourceType.Ore, ResourceType.Ore, ResourceType.Ore
+            ResourceType.WOOD, ResourceType.WOOD, ResourceType.WOOD, ResourceType.WOOD,
+            ResourceType.BRICK, ResourceType.BRICK, ResourceType.BRICK,
+            ResourceType.WHEAT, ResourceType.WHEAT, ResourceType.WHEAT, ResourceType.WHEAT,
+            ResourceType.SHEEP, ResourceType.SHEEP, ResourceType.SHEEP, ResourceType.SHEEP,
+            ResourceType.ORE, ResourceType.ORE, ResourceType.ORE
         };
 
         int[] numbers = { 2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12 };
@@ -44,6 +46,7 @@ class Board {
         tiles.put(9, new DesertHex(9));
 
         int resourceIndex = 0;
+
         for (int i = 0; i < 19; i++) {
             if (i == 9) {
                 continue;
@@ -53,8 +56,7 @@ class Board {
         }
     }
 
-    // True if the two corners are next to each other on the hex map (share an
-    // edge).
+    // True if the two corners are next to each other on the hex map (share an edge).
     public boolean isValidEdge(int start, int end) {
         for (int i = 0; i < 19; i++) {
             for (int j = 0; j < 6; j++) {
@@ -93,15 +95,14 @@ class Board {
         return intersections.get(intersectionID);
     }
 
-    // Ok if spot is empty and no neighbour has a building (and player has < 2), or
-    // if spot is connected by player's road.
+    // Ok if spot is empty and no neighbour has a building (and player has < 2), or if spot is connected by player's road.
     public boolean placeSettlement(Intersection placeIntersection, Player player) {
         if (rules.checkEmptyIntersections(placeIntersection.getIntersectionLocation(), this)) {
-            if (player.getPlayerSettlements().size() < 2) {
+            if (player.getSettlements().size() < 2) {
                 Settlement settlement = new Settlement(placeIntersection, player);
                 placeIntersection.setBuilding(settlement);
                 placeIntersection.setOwner(player);
-                player.getPlayerSettlements().add(settlement);
+                player.getPlayerBuildings().add(settlement);
                 return true;
             }
         } else {
@@ -109,7 +110,7 @@ class Board {
                 Settlement settlement = new Settlement(placeIntersection, player);
                 placeIntersection.setBuilding(settlement);
                 placeIntersection.setOwner(player);
-                player.getPlayerSettlements().add(settlement);
+                player.getPlayerBuildings().add(settlement);
                 return true;
             }
         }
@@ -119,7 +120,7 @@ class Board {
     // Only works if there is your settlement there; replaces it with a city.
     public boolean placeCity(Intersection placeIntersection, Player player) {
         Building existing = placeIntersection.getBuilding();
-        if (existing instanceof Settlement && existing.getOwner() == player) {
+        if (existing != null && existing.getBuildingType() == Building.BuildingType.SETTLEMENT && existing.getOwner() == player) {
             City city = new City(placeIntersection, player);
             placeIntersection.setBuilding(city);
             return true;
@@ -136,8 +137,7 @@ class Board {
         return false;
     }
 
-    // Road must be on a valid edge, not taken, and next to your building or your
-    // road.
+    // Road must be on a valid edge, not taken, and next to your building or your road.
     public boolean placeRoad(Edge placeEdge, Player player) {
         if (rules.checkRoadPlacement(placeEdge, player, this)) {
             Road road = new Road(player, placeEdge);
@@ -171,10 +171,11 @@ class Board {
     }
 
     public void moveRobber(Random random) {
-        int moveTile = 0;
-        while (moveTile == robberHexID) {
+        int moveTile;
+        do {
             moveTile = random.nextInt(19);
         }
+        while (moveTile == robberHexID);
         robberHexID = moveTile;
     }
 

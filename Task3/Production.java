@@ -12,8 +12,8 @@ class Production {
     public void generateResources(int diceRollNum) {
 
         for (HexTerrain hex : board.getHexes()) {
-            if (!hex.productionStatus()) {
-                continue; // Skip desert.
+            if (!hex.productionStatus() || hex.getHexID() == board.getRobberHexID()) {
+                continue;
             }
 
             HexBoardNum boardNumber = hex.getHexNumber();
@@ -26,10 +26,7 @@ class Production {
 
                     if (intersection.getBuilding() != null) {
                         Player intersectionOwner = intersection.getPlayer();
-                        int quantity = 1;
-                        if (intersection.getBuilding() instanceof City) {
-                            quantity += 1; // City gets 2 of the resource, settlement gets 1.
-                        }
+                        int quantity = intersection.getBuilding().getResourceMultiplier();
 
                         intersectionOwner.addResource(resource, quantity);
                     }

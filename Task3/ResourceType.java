@@ -1,7 +1,7 @@
 enum ResourceType {
-    Wood,
-    Brick,
-    Wheat,
-    Sheep,
-    Ore
+    WOOD,
+    BRICK,
+    WHEAT,
+    SHEEP,
+    ORE
 }

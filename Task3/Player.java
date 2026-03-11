@@ -1,54 +1,44 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
+import java.util.Scanner;
 
-// One player: their cards (resources), buildings (settlements/cities/roads), and VP. Can build if they have the right cards.
 abstract class Player {
+
     protected int playerID;
     protected int victoryPoints;
-    protected List<City> playerCities;
-    protected List<Settlement> playerSettlements;
+    protected List<Building> playerBuildings;
     protected List<Road> playerRoads;
-    protected Map<ResourceType, Integer> playerResources;
-    protected Visualizer visualizer;
+    protected ResourceManager resourceManager;
 
-    public Player(int playerNum, int playerVP, List<City> cities, List<Settlement> settlements, List<Road> roads,
-            Map<ResourceType, Integer> resources) {
+    public Player(int playerNum, int playerVP, List<Building> buildings, List<Road> roads,
+        Map<ResourceType, Integer> resources) {
         playerID = playerNum;
         victoryPoints = playerVP;
-        playerCities = cities;
-        playerSettlements = settlements;
-        playerResources = resources;
+        playerBuildings = buildings;
         playerRoads = roads;
+        this.resourceManager = new ResourceManager(resources);
     }
 
     public void addResource(ResourceType resource, int quantity) {
-        playerResources.put(resource, playerResources.getOrDefault(resource, 0) + quantity);
+        resourceManager.add(resource, quantity);
     }
 
-    public void setVisualizer(Visualizer visualizer) {
-        this.visualizer = visualizer;
-    }
-
-    // Take cards from hand. Returns false if not enough.
     public boolean removeResource(ResourceType resource, int quantity) {
-        int have = playerResources.getOrDefault(resource, 0);
-        if (have < quantity) {
-            System.out.println("Unsuccesful not enough resources");
-            return false;
-        }
-        playerResources.put(resource, have - quantity);
-        return true;
+        return resourceManager.remove(resource, quantity);
     }
 
     public boolean checkResource(ResourceType resource, int quantity) {
-        if (playerResources.containsKey(resource) && playerResources.get(resource) >= quantity) {
-            return true;
-        } else {
-            return false;
-        }
+        return resourceManager.has(resource, quantity);
+    }
+
+    public int getTotalResources() {
+        return resourceManager.getTotal();
+    }
+
+    public Map<ResourceType, Integer> getResourceMap() {
+        return resourceManager.getResourceMap();
     }
 
     public int getVictoryPoints() {
@@ -59,99 +49,79 @@ abstract class Player {
         victoryPoints++;
     }
 
-    public int getTotalResources() {
-        int total = 0;
-        for (int amount : playerResources.values()) {
-            total += amount;
-        }
-        return total;
+    public int getPlayerID() {
+        return playerID;
     }
 
-    // Costs 1 wood, 1 brick, 1 sheep, 1 wheat. Only builds if board says the spot
-    // is ok.
-    public void buildSettlement(Board board, Intersection buildIntersection) {
-        if (!checkResource(ResourceType.Wood, 1) || !checkResource(ResourceType.Brick, 1)
-                || !checkResource(ResourceType.Sheep, 1) || !checkResource(ResourceType.Wheat, 1)) {
-            return;
-        }
-        if (board.placeSettlement(buildIntersection, this)) {
-            removeResource(ResourceType.Wood, 1);
-            removeResource(ResourceType.Brick, 1);
-            removeResource(ResourceType.Sheep, 1);
-            removeResource(ResourceType.Wheat, 1);
-            victoryPoints += 1;
-            visualizer.refresh();
-        }
+    public List<Building> getPlayerBuildings() {
+        return playerBuildings;
     }
 
-    // Costs 2 wheat, 3 ore. Replaces one of your settlements with a city (same
-    // spot).
-    public void buildCity(Board board, Intersection buildIntersection) {
-        if (!checkResource(ResourceType.Wheat, 2) || !checkResource(ResourceType.Ore, 3)) {
-            return;
-        }
-        if (board.placeCity(buildIntersection, this)) {
-            removeResource(ResourceType.Wheat, 2);
-            removeResource(ResourceType.Ore, 3);
-
-            for (int i = 0; i < playerSettlements.size(); i++) {
-                if (playerSettlements.get(i).getBuildlocation() == buildIntersection) {
-                    playerSettlements.remove(i);
-                    break;
-                }
+    public List<Building> getSettlements() {
+        List<Building> settlements = new ArrayList<>();
+        for (Building b : playerBuildings) {
+            if (b.getBuildingType() == Building.BuildingType.SETTLEMENT) {
+                settlements.add(b);
             }
-
-            playerCities.add(new City(buildIntersection, this));
-            victoryPoints += 1;
-            visualizer.refresh();
         }
-    }
-
-    public void buildRoad(Board board, Edge buildEdge) {
-        if (!checkResource(ResourceType.Brick, 1) || !checkResource(ResourceType.Wood, 1)) {
-            return;
-        }
-        if (board.placeRoad(buildEdge, this)) {
-            removeResource(ResourceType.Brick, 1);
-            removeResource(ResourceType.Wood, 1);
-            visualizer.refresh();
-        }
-    }
-
-    // If over 7 cards we must try to spend (settlement then city then road). Else
-    // pick one build at random and try it.
-    public abstract String takeAction(Board board, Turn turn);
-
-    public List<Settlement> getPlayerSettlements() {
-        return playerSettlements;
+        return settlements;
     }
 
     public List<Road> getPlayerRoads() {
         return playerRoads;
     }
 
-    public int getPlayerID() {
-        return playerID;
-    }
+    public String buildSettlement(Board board, Intersection buildIntersection) {
+        int nodeId = buildIntersection.getIntersectionLocation();
 
-    /**
-     * Returns a copy of the player's resource counts (for display, e.g. List
-     * command).
-     */
-    public Map<ResourceType, Integer> getResourceMap() {
-        return new HashMap<>(playerResources);
-    }
-
-    private ResourceType getRandomResource(Random random) {
-        Map<ResourceType, Integer> resourceMap = getResourceMap();
-        List<ResourceType> resources = new ArrayList<>();
-        for (ResourceType resource : resourceMap.keySet()) {
-            int count = resourceMap.get(resource);
-            for (int i = 0; i < count; i++) {
-                resources.add(resource);
-            }
+        if (!checkResource(ResourceType.WOOD, 1) || !checkResource(ResourceType.BRICK, 1)
+            || !checkResource(ResourceType.SHEEP, 1) || !checkResource(ResourceType.WHEAT, 1)) {
+            return "failed to build settlement at node " + nodeId + " (insufficient resources)";
         }
-        return resources.get(random.nextInt(resources.size()));
+
+        if (board.placeSettlement(buildIntersection, this)) {
+            removeResource(ResourceType.WOOD, 1);
+            removeResource(ResourceType.BRICK, 1);
+            removeResource(ResourceType.SHEEP, 1);
+            removeResource(ResourceType.WHEAT, 1);
+            victoryPoints += 1;
+            return "built settlement at node " + nodeId;
+        }
+        return "failed to build settlement at node " + nodeId + " (invalid spot)";
+    }
+
+    public String buildCity(Board board, Intersection buildIntersection) {
+        int nodeId = buildIntersection.getIntersectionLocation();
+        if (!checkResource(ResourceType.WHEAT, 2) || !checkResource(ResourceType.ORE, 3)) {
+            return "failed to upgrade to city at node " + nodeId + " (insufficient resources)";
+        }
+        if (board.placeCity(buildIntersection, this)) {
+            removeResource(ResourceType.WHEAT, 2);
+            removeResource(ResourceType.ORE, 3);
+            for (int i = 0; i < playerBuildings.size(); i++) {
+                if (playerBuildings.get(i).getBuildlocation() == buildIntersection) {
+                    playerBuildings.set(i, playerBuildings.get(i).upgrade(this));
+                    break;
+                }
+            }
+            victoryPoints += 1;
+            return "upgraded settlement to city at node " + nodeId;
+        }
+        return "failed to upgrade to city at node " + nodeId + " (no settlement or not yours)";
+    }
+
+    public String buildRoad(Board board, Edge buildEdge) {
+        int startNum = buildEdge.getStart();
+        int endNum = buildEdge.getEnd();
+        if (!checkResource(ResourceType.BRICK, 1) || !checkResource(ResourceType.WOOD, 1)) {
+            return "failed to build road from " + startNum + " to " + endNum + " (insufficient resources)";
+        }
+        if (board.placeRoad(buildEdge, this)) {
+            removeResource(ResourceType.BRICK, 1);
+            removeResource(ResourceType.WOOD, 1);
+            return "built road from " + startNum + " to " + endNum;
+        }
+        return "failed to build road from " + startNum + " to " + endNum + " (not connected)";
     }
 
     public void discardCards(Random random) {
@@ -159,19 +129,24 @@ abstract class Player {
         if (cardsNum > 7) {
             int discardCount = cardsNum / 2;
             for (int i = 0; i < discardCount; i++) {
-                ResourceType card = getRandomResource(random);
+                ResourceType card = resourceManager.getRandomResource(random);
                 removeResource(card, 1);
             }
             System.out.println("Player " + playerID + " discarded " + discardCount + " cards.");
         }
     }
 
-    public void giveRandomResource(Player newPlayer, Random random) {
+    public String giveRandomResource(Player newPlayer, Random random) {
         if (getTotalResources() != 0) {
-            ResourceType card = getRandomResource(random);
+            ResourceType card = resourceManager.getRandomResource(random);
             removeResource(card, 1);
             newPlayer.addResource(card, 1);
-            System.out.println("Player " + newPlayer.getPlayerID() + " stole " + card + " to Player " + playerID);
+            return ", Player " + newPlayer.getPlayerID() + " stole " + card + " from Player " + playerID;
         }
+        return ", No players to steal from";
     }
+
+    public abstract String takeAction(Board board, Turn turn);
+    public abstract void initialSetup(Board board, Scanner scanner, Visualizer visualizer);
+    public abstract boolean requiresGoPrompt();
 }
