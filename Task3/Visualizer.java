@@ -52,7 +52,7 @@ class Visualizer {
                 Building building = intersection.getBuilding();
                 if (building != null && building.getOwner() == player) {
                     if (!firstBuilding) json.append(",\n");
-                    String type = (building instanceof City) ? "CITY" : "SETTLEMENT";
+                    String type = building.getBuildingType().name();
                     json.append("    { \"node\": " + i + ", \"owner\": \"" + color + "\", \"type\": \"" + type + "\" }");
                     firstBuilding = false;
                 }

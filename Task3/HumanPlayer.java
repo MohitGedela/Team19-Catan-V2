@@ -5,9 +5,9 @@ import java.util.Scanner;
 class HumanPlayer extends Player {
     private Map<ResourceType, Integer> resources;
 
-    public HumanPlayer(int playerNum, int playerVP, List<City> cities, List<Settlement> settlements, List<Road> roads,
-            Map<ResourceType, Integer> resources) {
-        super(playerNum, playerVP, cities, settlements, roads, resources);
+    public HumanPlayer(int playerNum, int playerVP, List<Building> buildings, List<Road> roads,
+        Map<ResourceType, Integer> resources) {
+        super(playerNum, playerVP, buildings, roads, resources);
         this.resources = resources;
     }
 

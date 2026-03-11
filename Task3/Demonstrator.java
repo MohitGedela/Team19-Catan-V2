@@ -56,9 +56,9 @@ class Demonstrator {
         // so the simulator treats them uniformly via polymorphism (LSP).
         List<Player> players = new ArrayList<Player>();
 
-        Player p1 = new ComputerPlayer(1, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
-        Player p2 = new ComputerPlayer(2, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
-        Player p3 = new ComputerPlayer(3, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        Player p1 = new ComputerPlayer(1, 0, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        Player p2 = new ComputerPlayer(2, 0, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        Player p3 = new ComputerPlayer(3, 0, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
 
         players.add(p1);
         players.add(p2);
@@ -72,7 +72,7 @@ class Demonstrator {
         // HumanPlayer.takeAction() reads commands from stdin using regex validation.
         // Valid commands: Roll, Go, List, Build settlement [n], Build city [n], Build road [n] [n]
         // "Go" steps the game forward (R2.4). All other commands block until Roll is used first.
-        Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
         players.add(p4);
 
         // *** VISUALIZER SETUP (R2.2, R2.3) ***
@@ -121,9 +121,9 @@ class Demonstrator {
 
         System.out.println("\n=== PLAYER SETTLEMENTS ===");
         for (Player p : players) {
-            for (Settlement s : p.getPlayerSettlements()) {
+            for (Building b : p.getSettlements()) {
                 System.out.println("Player " + p.getPlayerID() + " settlement at node "
-                        + s.getBuildlocation().getIntersectionLocation());
+                        + b.getBuildlocation().getIntersectionLocation());
             }
         }
 

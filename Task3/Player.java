@@ -9,18 +9,16 @@ import java.util.Scanner;
 abstract class Player {
     protected int playerID;
     protected int victoryPoints;
-    protected List<City> playerCities;
-    protected List<Settlement> playerSettlements;
+    protected List<Building> playerBuildings;
     protected List<Road> playerRoads;
     protected Map<ResourceType, Integer> playerResources;
     protected Visualizer visualizer;
 
-    public Player(int playerNum, int playerVP, List<City> cities, List<Settlement> settlements, List<Road> roads,
-            Map<ResourceType, Integer> resources) {
+    public Player(int playerNum, int playerVP, List<Building> buildings, List<Road> roads,
+        Map<ResourceType, Integer> resources) {
         playerID = playerNum;
         victoryPoints = playerVP;
-        playerCities = cities;
-        playerSettlements = settlements;
+        playerBuildings = buildings;
         playerResources = resources;
         playerRoads = roads;
     }
@@ -96,23 +94,22 @@ abstract class Player {
     // Costs 2 wheat, 3 ore. Replaces one of your settlements with a city (same spot).
     public void buildCity(Board board, Intersection buildIntersection) {
         if (!checkResource(ResourceType.Wheat, 2) || !checkResource(ResourceType.Ore, 3)) {
-            // System.out.println("Not enough resources to build city");
             return;
         }
         if (board.placeCity(buildIntersection, this)) {
             removeResource(ResourceType.Wheat, 2);
             removeResource(ResourceType.Ore, 3);
 
-            for (int i = 0; i < playerSettlements.size(); i++) {
-                if (playerSettlements.get(i).getBuildlocation() == buildIntersection) {
-                    playerSettlements.remove(i);
+            for (int i = 0; i < playerBuildings.size(); i++) {
+                if (playerBuildings.get(i).getBuildlocation() == buildIntersection) {
+                    playerBuildings.set(i, playerBuildings.get(i).upgrade(this));
                     break;
                 }
             }
 
-            playerCities.add(new City(buildIntersection, this));
             victoryPoints += 1;
             visualizer.refresh();
+            System.out.println("Succesfully built a city at node: " + buildIntersection.getIntersectionLocation());
         } else {
             System.out.println("Cannot build city at node " + buildIntersection.getIntersectionLocation() + " - no settlement there or not yours.");
         }
@@ -140,8 +137,18 @@ abstract class Player {
     // If over 7 cards we must try to spend (settlement then city then road). Else pick one build at random and try it.
     public abstract String takeAction(Board board, Turn turn);
 
-    public List<Settlement> getPlayerSettlements() {
-        return playerSettlements;
+    public List<Building> getPlayerBuildings() {
+        return playerBuildings;
+    }
+
+    public List<Building> getSettlements() {
+        List<Building> settlements = new ArrayList<>();
+        for (Building b : playerBuildings) {
+            if (b.getBuildingType() == Building.BuildingType.SETTLEMENT) {
+                settlements.add(b);
+            }
+        }
+        return settlements;
     }
 
     public List<Road> getPlayerRoads() {

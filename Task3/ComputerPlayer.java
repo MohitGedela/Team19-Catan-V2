@@ -9,8 +9,8 @@ class ComputerPlayer extends Player {
 
     private Random random = new Random();
 
-    public ComputerPlayer(int playerNum, int playerVP, List<City> cities, List<Settlement> settlements, List<Road> roads, Map<ResourceType, Integer> resources) {
-        super(playerNum, playerVP, cities, settlements, roads, resources);
+    public ComputerPlayer(int playerNum, int playerVP, List<Building> buildings, List<Road> roads, Map<ResourceType, Integer> resources) {
+        super(playerNum, playerVP, buildings, roads, resources);
     }
 
     @Override
@@ -19,8 +19,8 @@ class ComputerPlayer extends Player {
 
         if (getTotalResources() > 7) {
             // Try city FIRST - more likely to succeed since player already has settlements
-            for (int i = 0; i < getPlayerSettlements().size(); i++) {
-                Intersection spot = getPlayerSettlements().get(i).getBuildlocation();
+            for (int i = 0; i < getSettlements().size(); i++) {
+                Intersection spot = getSettlements().get(i).getBuildlocation();
                 int vpBefore = getVictoryPoints();
                 buildCity(board, spot);
                 if (getVictoryPoints() > vpBefore) {
@@ -77,9 +77,9 @@ class ComputerPlayer extends Player {
             }
 
         } else if (action == 1) {
-            if (!getPlayerSettlements().isEmpty()) {
-                int randomIndex = random.nextInt(getPlayerSettlements().size());
-                Intersection target = getPlayerSettlements().get(randomIndex).getBuildlocation();
+            if (!getSettlements().isEmpty()) {
+                int randomIndex = random.nextInt(getSettlements().size());
+                Intersection target = getSettlements().get(randomIndex).getBuildlocation();
                 int vpBefore = getVictoryPoints();
                 buildCity(board, target);
                 if (getVictoryPoints() > vpBefore) {

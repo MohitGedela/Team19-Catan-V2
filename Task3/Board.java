@@ -97,11 +97,11 @@ class Board {
     // if spot is connected by player's road.
     public boolean placeSettlement(Intersection placeIntersection, Player player) {
         if (rules.checkEmptyIntersections(placeIntersection.getIntersectionLocation(), this)) {
-            if (player.getPlayerSettlements().size() < 2) {
+            if (player.getSettlements().size() < 2) {
                 Settlement settlement = new Settlement(placeIntersection, player);
                 placeIntersection.setBuilding(settlement);
                 placeIntersection.setOwner(player);
-                player.getPlayerSettlements().add(settlement);
+                player.getPlayerBuildings().add(settlement);
                 return true;
             }
         } else {
@@ -109,7 +109,7 @@ class Board {
                 Settlement settlement = new Settlement(placeIntersection, player);
                 placeIntersection.setBuilding(settlement);
                 placeIntersection.setOwner(player);
-                player.getPlayerSettlements().add(settlement);
+                player.getPlayerBuildings().add(settlement);
                 return true;
             }
         }
@@ -119,10 +119,9 @@ class Board {
     // Only works if there is your settlement there; replaces it with a city.
     public boolean placeCity(Intersection placeIntersection, Player player) {
         Building existing = placeIntersection.getBuilding();
-        if (existing instanceof Settlement && existing.getOwner() == player) {
+        if (existing != null && existing.getBuildingType() == Building.BuildingType.SETTLEMENT && existing.getOwner() == player) {
             City city = new City(placeIntersection, player);
             placeIntersection.setBuilding(city);
-            placeIntersection.setOwner(player);
             return true;
         }
         return false;
