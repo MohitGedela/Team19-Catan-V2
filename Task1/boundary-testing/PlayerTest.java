@@ -1,3 +1,5 @@
+package boundarytesting;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.util.*;
@@ -62,7 +64,7 @@ class PlayerTest {
                 break;
             }
         }
-        
+
         assertTrue(noActionTaken, "takeRandomAction should return no action taken when no valid actions exist.");
     }
 }
