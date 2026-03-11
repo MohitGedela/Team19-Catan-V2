@@ -15,46 +15,40 @@ class ComputerPlayer extends Player {
 
     @Override
     public String takeAction(Board board, Turn turn) {
-        int roll = turn.doRoll(this);
+        String rollResult = turn.doRoll(this);
 
         if (getTotalResources() > 7) {
-            // Try city FIRST - more likely to succeed since player already has settlements
             for (int i = 0; i < getSettlements().size(); i++) {
                 Intersection spot = getSettlements().get(i).getBuildlocation();
-                int vpBefore = getVictoryPoints();
-                buildCity(board, spot);
-                if (getVictoryPoints() > vpBefore) {
-                    return "Rolled " + roll + ", forced spend: upgraded settlement to city at node " + spot.getIntersectionLocation();
+                String result = buildCity(board, spot);
+                if (result.startsWith("upgraded")) {
+                    return rollResult + ", forced spend: " + result;
                 }
             }
-            // Try settlement second
             for (int i = 0; i <= 53; i++) {
                 Intersection spot = board.getIntersection(i);
                 if (spot != null && spot.getBuilding() == null) {
-                    int vpBefore = getVictoryPoints();
-                    buildSettlement(board, spot);
-                    if (getVictoryPoints() > vpBefore) {
-                        return "Rolled " + roll + ", forced spend: built settlement at node " + i;
+                    String result = buildSettlement(board, spot);
+                    if (result.startsWith("built")) {
+                        return rollResult + ", forced spend: " + result;
                     }
                 }
             }
-            // Try road last
             for (int i = 0; i <= 53; i++) {
                 for (int j = i + 1; j <= 53; j++) {
                     if (board.isValidEdge(i, j)) {
-                        int roadsBefore = getPlayerRoads().size();
                         Edge edge = new Edge(i, j);
-                        buildRoad(board, edge);
-                        if (getPlayerRoads().size() > roadsBefore) {
-                            return "Rolled " + roll + ", forced spend: built road at " + i + "-" + j;
+                        String result = buildRoad(board, edge);
+                        if (result.startsWith("built")) {
+                            return rollResult + ", forced spend: " + result;
                         }
                     }
                 }
             }
-            return "Rolled " + roll + ", forced spend: not enough resources to build anything";
+            return rollResult + ", forced spend: not enough resources to build anything";
         }
 
-        int action = random.nextInt(3); // 0 = settlement, 1 = city, 2 = road
+        int action = random.nextInt(3);
 
         if (action == 0) {
             List<Integer> validSpots = new ArrayList<>();
@@ -68,24 +62,16 @@ class ComputerPlayer extends Player {
                 int randomIndex = random.nextInt(validSpots.size());
                 int nodeId = validSpots.get(randomIndex);
                 Intersection target = board.getIntersection(nodeId);
-                int vpBefore = getVictoryPoints();
-                buildSettlement(board, target);
-                if (getVictoryPoints() > vpBefore) {
-                    return "Rolled " + roll + ", built settlement at node " + nodeId;
-                }
-                return "Rolled " + roll + ", failed to build settlement at node " + nodeId + " (invalid spot or insufficient resources)";
+                String result = buildSettlement(board, target);
+                return rollResult + ", " + result;
             }
 
         } else if (action == 1) {
             if (!getSettlements().isEmpty()) {
                 int randomIndex = random.nextInt(getSettlements().size());
                 Intersection target = getSettlements().get(randomIndex).getBuildlocation();
-                int vpBefore = getVictoryPoints();
-                buildCity(board, target);
-                if (getVictoryPoints() > vpBefore) {
-                    return "Rolled " + roll + ", upgraded settlement to city at node " + target.getIntersectionLocation();
-                }
-                return "Rolled " + roll + ", failed to upgrade to city at node " + target.getIntersectionLocation() + " (insufficient resources)";
+                String result = buildCity(board, target);
+                return rollResult + ", " + result;
             }
 
         } else {
@@ -101,16 +87,12 @@ class ComputerPlayer extends Player {
                 int randomIndex = random.nextInt(validEdges.size());
                 int[] picked = validEdges.get(randomIndex);
                 Edge edge = new Edge(picked[0], picked[1]);
-                int roadsBefore = getPlayerRoads().size();
-                buildRoad(board, edge);
-                if (getPlayerRoads().size() > roadsBefore) {
-                    return "Rolled " + roll + ", built road from node " + picked[0] + " to " + picked[1];
-                }
-                return "Rolled " + roll + ", failed to build road from node " + picked[0] + " to " + picked[1] + " (not connected or insufficient resources)";
+                String result = buildRoad(board, edge);
+                return rollResult + ", " + result;
             }
         }
 
-        return "Rolled " + roll + ", no action taken";
+        return rollResult + ", no action taken";
     }
 
     @Override
@@ -157,5 +139,10 @@ class ComputerPlayer extends Player {
         while (!scanner.nextLine().trim().matches("(?i)Go")) {
             System.out.println("Enter Go to continue.");
         }
+    }
+
+    @Override
+    public boolean requiresGoPrompt() {
+        return true;
     }
 }

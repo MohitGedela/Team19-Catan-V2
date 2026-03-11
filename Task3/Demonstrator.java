@@ -22,7 +22,7 @@ class Demonstrator {
         // *** BOARD SETUP ***
         // The board holds 19 hex tiles, 54 intersections and edges. Production
         // maps dice rolls to resource-generating tiles and dice rolls two six-sided
-        // dice each turn. 
+        // dice each turn.
         Board board = new Board();
         Dice dice = new Dice();
         Production production = new Production(board);
@@ -33,14 +33,14 @@ class Demonstrator {
         Scanner scanner = null;
         java.io.File cfgFile = new java.io.File("config.txt");
         if (!cfgFile.exists()) {
-            cfgFile = new java.io.File("Task4/config.txt");
+            cfgFile = new java.io.File("Task3/config.txt");
         }
         if (cfgFile.exists()) {
             scanner = new Scanner(cfgFile);
         } else {
-            java.io.InputStream in = Demonstrator.class.getResourceAsStream("/Task4/config.txt");
+            java.io.InputStream in = Demonstrator.class.getResourceAsStream("/Task3/config.txt");
             if (in == null) {
-                throw new java.io.FileNotFoundException("config.txt not found in working dir, Task4/, or classpath");
+                throw new java.io.FileNotFoundException("config.txt not found in working dir, Task3/, or classpath");
             }
             scanner = new Scanner(in);
         }
@@ -60,33 +60,31 @@ class Demonstrator {
         Player p2 = new ComputerPlayer(2, 0, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
         Player p3 = new ComputerPlayer(3, 0, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
 
-        players.add(p1);
-        players.add(p2);
-        players.add(p3);
-
-        // Turn is created before p4 is added so computer players can be
-        // set up first, but p4 is added to the same shared list before the game starts.
-        Turn turn = new Turn(dice, production, board, players);
-
         // *** HUMAN PLAYER (R2.1, R2.4) ***
         // HumanPlayer.takeAction() reads commands from stdin using regex validation.
         // Valid commands: Roll, Go, List, Build settlement [n], Build city [n], Build road [n] [n]
         // "Go" steps the game forward (R2.4). All other commands block until Roll is used first.
-        Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        ParseCommand parser = new ParseCommand();
+        Player p4 = new HumanPlayer(4, 0, new ArrayList<>(), new ArrayList<>(), new HashMap<>(), parser);
+
+        players.add(p1);
+        players.add(p2);
+        players.add(p3);
         players.add(p4);
 
         // *** VISUALIZER SETUP (R2.2, R2.3) ***
         // Visualizer writes current board state (settlements, cities, roads, resources)
         // to visualize/state.json after every player action.
-        // Each player holds a reference to the visualizer and calls refresh() after building.
+        // Turn now holds the visualizer reference and calls refresh() after each
+        // action, keeping visualization logic out of Player (SRP).
         Visualizer visualizer = new Visualizer("visualize/state.json", players, board);
-        p1.setVisualizer(visualizer);
-        p2.setVisualizer(visualizer);
-        p3.setVisualizer(visualizer);
-        p4.setVisualizer(visualizer);
-
         visualizer.clear();
         Thread.sleep(600);
+
+        // Turn is created after the visualizer so it can be passed in directly.
+        // Turn.execute() calls visualizer.refresh() after each player action,
+        // so Player no longer needs a reference to the visualizer.
+        Turn turn = new Turn(dice, production, board, players, visualizer);
 
         Scanner inputScanner = new Scanner(System.in);
 

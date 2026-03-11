@@ -1,6 +1,5 @@
 import java.util.List;
 
-// One turn = roll dice, give resources to players on that number, then get this player's one action (build something or try).
 class Turn {
 
     private Dice dice;
@@ -9,31 +8,44 @@ class Turn {
     private Robber robber;
     private List<Player> players;
     private int currentRound;
+    private Visualizer visualizer;
 
-    public Turn(Dice dice, Production production, Board board, List<Player> players) {
+    public Turn(Dice dice, Production production, Board board, List<Player> players, Visualizer visualizer) {
         this.dice = dice;
         this.production = production;
         this.board = board;
         this.players = players;
         this.robber = new Robber(board, new java.util.Random());
+        this.visualizer = visualizer;
     }
 
     public String execute(Player player, int roundNumber) {
         this.currentRound = roundNumber;
         String actionResult = player.takeAction(board, this);
-        return "\n[" + roundNumber + "] / [" + player.getPlayerID() + "]: " + actionResult;
+        visualizer.refresh();
+        if (actionResult.isEmpty()) {
+            return "";
+        }
+        return "[" + roundNumber + "] / [" + player.getPlayerID() + "]: " + actionResult;
     }
 
-    public int doRoll(Player player) {
+    public String doRoll(Player player) {
         int roll = dice.roll();
         if (roll == 7) {
             String robberResult = robber.runRobber(player, players);
-            System.out.println("[" + currentRound + "] / [" + player.getPlayerID() + "]: Rolled 7, Robber activated" + robberResult);
-            robber.runRobber(player, players);
+            return "Rolled 7, Robber activated" + robberResult;
         } else {
             production.generateResources(roll);
+            return "Rolled " + roll;
         }
-        return roll;
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
+    public String formatAction(Player player, String action) {
+        return "[" + currentRound + "] / [" + player.getPlayerID() + "]: " + action;
     }
 
     public Board getBoard() {

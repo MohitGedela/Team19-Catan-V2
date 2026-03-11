@@ -25,7 +25,9 @@ class Simulator {
 
             for (Player player : players) {
                 String result = turn.execute(player, round);
-                System.out.println(result);
+                if (!result.isEmpty()) {
+                    System.out.println(result);
+                }
 
                 if (player.getVictoryPoints() >= 10) {
                     System.out.println("Player " + player.getPlayerID() + " wins with " + player.getVictoryPoints()
@@ -34,7 +36,7 @@ class Simulator {
                     break;
                 }
 
-                if (!(player instanceof HumanPlayer)) {
+                if (player.requiresGoPrompt()) {
                     System.out.println("Enter Go to move forward to next turn.");
                     while (!scanner.nextLine().trim().matches("(?i)Go")) {
                         System.out.println("Enter Go to move forward to next turn.");
@@ -51,7 +53,6 @@ class Simulator {
         }
 
         if (!gameOver) {
-            // Nobody reached 10 VP before round limit.
             System.out.println("Game ended after " + maxRounds + " rounds. No winner.");
         }
     }

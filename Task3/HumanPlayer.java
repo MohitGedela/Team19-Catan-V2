@@ -3,19 +3,18 @@ import java.util.Map;
 import java.util.Scanner;
 
 class HumanPlayer extends Player {
-    private Map<ResourceType, Integer> resources;
+    private ParseCommand parser;
 
     public HumanPlayer(int playerNum, int playerVP, List<Building> buildings, List<Road> roads,
-        Map<ResourceType, Integer> resources) {
+            Map<ResourceType, Integer> resources, ParseCommand parser) {
         super(playerNum, playerVP, buildings, roads, resources);
-        this.resources = resources;
+        this.parser = parser;
     }
 
-    // move
     @Override
     public String takeAction(Board board, Turn turn) {
         Scanner scanner = new Scanner(System.in);
-        boolean hasRolled = false; // track if player has rolled this turn
+        boolean hasRolled = false;
 
         while (true) {
             System.out.println("\nPlease enter one of the following commands:");
@@ -24,70 +23,43 @@ class HumanPlayer extends Player {
             System.out.println("List");
             System.out.println("Build settlement [nodeID]");
             System.out.println("Build city [nodeID]");
-            System.out.println("Build road [fromNodeID], [endID]");
+            System.out.println("Build road [fromNodeID] [toNodeID]");
 
-            String userInput = scanner.nextLine().trim();
-            if (userInput.matches("(?i)Roll")) {
-                if (hasRolled) {
-                    System.out.println("You already rolled this turn!");
-                } else {
-                    int roll = turn.doRoll(this);
-                    System.out.println("Rolled " + roll);
-                    hasRolled = true;
-                }
+            String input = scanner.nextLine().trim();
+            Command command = parser.parse(input);
 
-            } else if (!hasRolled) {
-                // Block all other commands until player rolls
-                System.out.println("You must roll first!");
-
-            } else if (userInput.matches("(?i)Build\\s+settlement\\s+\\d+")) {
-                String[] fragments = userInput.split("\\s+");
-                int nodeId = Integer.parseInt(fragments[2]);
-                Intersection tileIntersection = board.getIntersection(nodeId);
-                if (tileIntersection == null) {
-                    System.out.println("Invalid node ID: " + nodeId);
-                } else {
-                    buildSettlement(board, tileIntersection);
-                }
-
-            } else if (userInput.matches("(?i)Build\\s+city\\s+\\d+")) {
-                String[] fragments = userInput.split("\\s+");
-                int nodeId = Integer.parseInt(fragments[2]);
-                Intersection tileIntersection = board.getIntersection(nodeId);
-                if (tileIntersection == null) {
-                    System.out.println("Invalid node ID: " + nodeId);
-                } else {
-                    buildCity(board, tileIntersection);
-                }
-
-            } else if (userInput.matches("(?i)Build\\s+road\\s+\\d+\\s+\\d+")) {
-                String[] fragments = userInput.split("\\s+");
-                int startNum = Integer.parseInt(fragments[2]);
-                int endNum = Integer.parseInt(fragments[3]);
-                if (!board.isValidEdge(startNum, endNum)) {
-                    System.out.println("Invalid edge: " + startNum + "-" + endNum);
-                } else {
-                    Edge tileEdge = new Edge(startNum, endNum);
-                    buildRoad(board, tileEdge);
-                }
-
-            } else if (userInput.matches("(?i)List")) {
-                System.out.println("Current resources:");
-                System.out.println(resources);
-
-            } else if (userInput.matches("(?i)Go")) {
-                break;
-
-            } else {
-                System.out.println("Invalid command try again!");
+            if (command == null) {
+                System.out.println("Invalid command, try again!");
+                continue;
             }
+            if (!hasRolled && !command.isRoll()) {
+                System.out.println("You must roll first!");
+                continue;
+            }
+            if (command.isRoll() && hasRolled) {
+                System.out.println("You already rolled this turn!");
+                continue;
+            }
+
+            String result = command.execute(this, board, turn);
+
+            if (command.isGo()) break;
+
+            if (command.isRoll()) {
+                hasRolled = true;
+            }
+            System.out.println(turn.formatAction(this, result));
         }
-        return "ended turn";
+        return "";
+    }
+
+    @Override
+    public boolean requiresGoPrompt() {
+        return false;
     }
 
     @Override
     public void initialSetup(Board board, Scanner scanner, Visualizer visualizer) {
-
         int settlementNode = -1;
 
         while (true) {
@@ -96,34 +68,43 @@ class HumanPlayer extends Player {
             try {
                 int nodeID = Integer.parseInt(input);
                 Intersection spot = board.getIntersection(nodeID);
-                if (spot == null || nodeID < 0 || nodeID > 53) { System.out.println("Invalid node."); continue; }
+                if (spot == null || nodeID < 0 || nodeID > 53) {
+                    System.out.println("Invalid node.");
+                    continue;
+                }
                 if (board.placeSettlement(spot, this)) {
                     addVictoryPoint();
                     settlementNode = nodeID;
                     visualizer.refresh();
                     break;
-                } else 
-                    { System.out.println("Invalid spot, try another."); }
-            } catch (NumberFormatException e) { System.out.println("Enter a valid number."); }
+                } else {
+                    System.out.println("Invalid spot, try another.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Enter a valid number.");
+            }
         }
 
         while (true) {
-            System.out.print("Player " + playerID + ", place your road (enter adjacent node to " + settlementNode + "): ");
+            System.out.print(
+                    "Player " + playerID + ", place your road (enter adjacent node to " + settlementNode + "): ");
             String input = scanner.nextLine().trim();
             try {
                 int endNode = Integer.parseInt(input);
-                if (!board.isValidEdge(settlementNode, endNode)) { 
-                    System.out.println("Not adjacent to your settlement."); 
-                    continue; 
+                if (!board.isValidEdge(settlementNode, endNode)) {
+                    System.out.println("Not adjacent to your settlement.");
+                    continue;
                 }
                 Edge edge = new Edge(settlementNode, endNode);
                 if (board.placeRoad(edge, this)) {
                     visualizer.refresh();
                     break;
-                } else { 
-                    System.out.println("Invalid road placement."); 
+                } else {
+                    System.out.println("Invalid road placement.");
                 }
-            } catch (NumberFormatException e) { System.out.println("Enter a valid number."); }
+            } catch (NumberFormatException e) {
+                System.out.println("Enter a valid number.");
+            }
         }
     }
 }
