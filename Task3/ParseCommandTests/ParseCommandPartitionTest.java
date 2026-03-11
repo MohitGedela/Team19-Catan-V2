@@ -3,8 +3,6 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 class ParseCommandPartitionTest {
-
-    // Helper to make a ParseCommand parser
     private ParseCommand makeParser() {
         return new ParseCommand();
     }
