@@ -81,7 +81,40 @@ python light_visualizer.py base_map.json state.json
 python light_visualizer.py base_map.json --watch
 ```
 
-*Note: It is not aligned with the mappings in the repo provided, so to make it work, please use the outlined mappings.
+*Note: It is not aligned with the mappings in the repo provided, so to make it work, please use the outlined mappings:
+## Tile-Node Mappings
+```java
+private int[][] tilesNodes = {
+    // Row 1 (3 tiles)
+    { 42, 40, 41, 16, 18, 38 },
+    { 41, 43, 44, 19, 17, 16 },
+    { 44, 45, 46, 47, 20, 19 },
+
+    // Row 2 (4 tiles)
+    { 39, 38, 18, 13, 15, 35 },
+    { 18, 16, 17,  0,  5, 13 },
+    { 17, 19, 20, 21,  1,  0 },
+    { 20, 47, 48, 49, 22, 21 },
+
+    // Row 3 (5 tiles)
+    { 37, 35, 15, 14, 34, 36 },
+    { 15, 13,  5,  4, 12, 14 },
+    {  5,  0,  1,  2,  3,  4 },
+    {  1, 21, 22, 23,  6,  2 },
+    { 22, 49, 50, 51, 52, 23 },
+
+    // Row 4 (4 tiles)
+    { 34, 14, 12, 11, 32, 33 },
+    { 12,  4,  3,  9, 10, 11 },
+    {  3,  2,  6,  7,  8,  9 },
+    {  6, 23, 52, 53, 24,  7 },
+
+    // Row 5 (3 tiles)
+    { 32, 11, 10, 29, 30, 31 },
+    { 10,  9,  8, 27, 28, 29 },
+    {  8,  7, 24, 25, 26, 27 },
+};
+```
 
 ---
 
