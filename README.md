@@ -32,6 +32,65 @@ This project extends a simulator for the game of Settlers of Catan to support hu
 ---
 
 ## How to Run
+## How to Run
+
+### Part 1: Visualizer Setup
+
+#### 1. Clone the repository and navigate to the visualizer
+```bash
+git clone https://github.com/MohitGedela/Team19-Catan-V2.git
+cd Task3
+cd visualize
+```
+
+#### 2. Set up a Python virtual environment
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+```
+
+#### 3. Install the required packages
+```bash
+pip install -r requirements.txt
+```
+
+#### 4. Clone the Catanatron rendering library
+```bash
+git clone -b gym-rendering https://github.com/bcollazo/catanatron.git
+cd catanatron
+```
+
+#### 5. Install Catanatron's dependencies
+```bash
+pip install -e ".[web,gym,dev]"
+```
+
+#### 6. Go back to the visualizer directory
+```bash
+cd ..
+```
+
+#### 7. Run the visualizer
+
+**Single render:**
+```bash
+python light_visualizer.py base_map.json state.json
+```
+
+**Watch mode:**
+```bash
+python light_visualizer.py base_map.json --watch
+```
+
+---
+
+### Part 2: Running the Java Game
+
+#### Run manually (To see live render create another tab and run part 1. This will allow to see live snapshots of the boards that are generated in the scraped boards folder in Task3/visualize)
+```bash
+cd Task3
+java Demonstrator.java
+```
 
 ---
 
