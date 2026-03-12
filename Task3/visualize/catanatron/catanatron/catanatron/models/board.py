@@ -96,10 +96,10 @@ class Board:
         buildable = self.buildable_node_ids(
             color, initial_build_phase=initial_build_phase
         )
-        if node_id not in buildable:
-            raise ValueError(
-                "Invalid Settlement Placement: not connected and not initial-placement"
-            )
+        # if node_id not in buildable:
+        #     raise ValueError(
+        #         "Invalid Settlement Placement: not connected and not initial-placement"
+        #     )
 
         if node_id in self.buildings:
             raise ValueError("Invalid Settlement Placement: a building exists there")
@@ -187,8 +187,8 @@ class Board:
     def build_road(self, color, edge):
         buildable = self.buildable_edges(color)
         inverted_edge = (edge[1], edge[0])
-        if edge not in buildable and inverted_edge not in buildable:
-            raise ValueError("Invalid Road Placement")
+        # if edge not in buildable and inverted_edge not in buildable:
+        #     raise ValueError("Invalid Road Placement")
 
         self.roads[edge] = color
         self.roads[inverted_edge] = color
