@@ -34,6 +34,27 @@ This project extends a simulator for the game of Settlers of Catan to support hu
 
 ---
 
+## File Structure
+```
+Team19-Catan-V2/
+├── .github/
+│   └── workflows/
+├── Task1/
+│   ├── boundary-testing/
+│   └── partition-testing/
+├── Task2/
+│   ├── Automaton Model.jpeg
+│   └── UML Class Diagram.png
+├── Task3/
+│   ├── ParseCommandTests/
+│   ├── visualize/
+│   └── *.java (source files)
+├── README.md
+├── Team19_Assignment2_Report.pdf
+└── sonar-project.properties
+```
+---
+
 ## Software & Tools Used
 - **Java** – For compiling and running the simulator and demonstrator programs  
 - **Eclipse Papyrus** – For UML modeling and code generation  
