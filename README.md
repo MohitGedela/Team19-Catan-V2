@@ -4,6 +4,7 @@
 
 **Course:** SFWRENG 2AA4: Software Design I  
 **Institution:** McMaster University, Winter 2026  
+**Team:** Team 19
 
 ---
 
@@ -15,7 +16,7 @@
 
 ---
 
-## Summary
+## Overview
 <p align="justify">
 This project extends a simulator for the game of Settlers of Catan to support human gameplay. Building on the core simulator from Assignment 1, this assignment introduces a human player, command-line input parsing using regular expressions, a step-forward mechanism, trading, and the Robber mechanic. The game state is maintained in an external JSON file to feed a visualizer, keeping the human player informed of all actions. The design was evolved using UML class diagrams and an automaton model to capture each agent's action space within a turn. Unit tests were developed before any changes were made to ensure correctness throughout the evolution of the codebase.
 </p>
@@ -61,6 +62,13 @@ Team19-Catan-V2/
 - **Visual Studio Code** – For editing and navigating Java code  
 - **GitHub** – Repository hosting and version control  
 - **Python** – For compiling and running the visualizer 
+
+---
+
+## Our Process
+- **Project Board:** [View our Kanban Board]([https://github.com/users/MohitGedela/projects/X])
+- **Tasks:** Work items created and assigned as GitHub Issues throughout the project
+- **Merging:** Features developed on separate branches and merged through pull requests
 
 ---
 
