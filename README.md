@@ -40,15 +40,15 @@ Team19-Catan-V2/
 ├── .github/
 │   └── workflows/
 ├── Task1/
-│   ├── boundary-testing/
-│   └── partition-testing/
+│   ├── boundary-testing/    # Boundary test cases
+│   └── partition-testing/   # Partition test cases
 ├── Task2/
 │   ├── Automaton Model.jpeg
 │   └── UML Class Diagram.png
 ├── Task3/
-│   ├── ParseCommandTests/
-│   ├── visualize/
-│   └── *.java (source files)
+│   ├── ParseCommandTests/   # Unit tests for the command parser
+│   ├── visualize/           # Python visualizer and state.json
+│   └── *.java               # Source files
 ├── README.md
 ├── Team19_Assignment2_Report.pdf
 └── sonar-project.properties
