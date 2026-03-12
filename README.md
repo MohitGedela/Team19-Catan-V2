@@ -32,7 +32,6 @@ This project extends a simulator for the game of Settlers of Catan to support hu
 ---
 
 ## How to Run
-## How to Run
 
 ### Part 1: Visualizer Setup
 
@@ -81,6 +80,8 @@ python light_visualizer.py base_map.json state.json
 ```bash
 python light_visualizer.py base_map.json --watch
 ```
+
+*Note: It is not aligned with the mappings in the repo provided, so to make it work, please use the outlined mappings.
 
 ---
 
